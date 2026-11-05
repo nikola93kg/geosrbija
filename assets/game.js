@@ -69,7 +69,10 @@
   }
 
   var svg = document.getElementById('map'), marks;
-  function drawMap() {
+  var PIN = 'M0 0C-2-5-6-7-6-11A6 6 0 1 1 6-11C6-7 2-5 0 0Z';
+
+  // Draws the Serbia+Kosovo landmass into an <svg>; id prefix keeps gradient ids unique per svg.
+  function drawLand(target, id, detail) {
     var minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity, rings = [];
     GEO_MAP.outline.forEach(function (country) {
       country.forEach(function (ring) {
@@ -80,22 +83,35 @@
         });
       });
     });
-    var pad = 8;
-    svg.setAttribute('viewBox', (minX - pad) + ' ' + (minY - pad) + ' ' + (maxX - minX + 2 * pad) + ' ' + (maxY - minY + 2 * pad));
-    var defs = el('defs', {}, svg);
-    // North-to-south colour ramp mimics the lowland/highland relief.
-    var g = el('linearGradient', { id: 'relief', x1: 0, y1: 0, x2: 0, y2: 1 }, defs);
-    [['0', '#43b649'], ['0.33', '#7cc04a'], ['0.45', '#b9b45a'], ['0.7', '#c99a5e'], ['1', '#a8703f']].forEach(function (s) {
-      el('stop', { offset: s[0], 'stop-color': s[1] }, g);
-    });
-    var clip = el('clipPath', { id: 'land' }, defs);
+    var pad = 10;
+    target.setAttribute('viewBox', (minX - pad) + ' ' + (minY - pad) + ' ' + (maxX - minX + 2 * pad) + ' ' + (maxY - minY + 2 * pad + 8));
+    var defs = el('defs', {}, target);
+    var g = el('linearGradient', { id: id + 'Fill', x1: 0.1, y1: 0, x2: 0.8, y2: 1 }, defs);
+    [['0', '#6ad14f'], ['0.5', '#46a844'], ['1', '#2c7d32']].forEach(function (s) { el('stop', { offset: s[0], 'stop-color': s[1] }, g); });
+    var gl = el('linearGradient', { id: id + 'Gloss', x1: 0, y1: 0, x2: 0.3, y2: 0.7 }, defs);
+    el('stop', { offset: 0, 'stop-color': '#fff', 'stop-opacity': 0.25 }, gl);
+    el('stop', { offset: 1, 'stop-color': '#fff', 'stop-opacity': 0 }, gl);
     var land = pathOf(rings, true);
-    el('path', { d: land }, clip);
-    el('path', { d: land, fill: 'none', stroke: '#fff', 'stroke-width': 5, 'stroke-linejoin': 'round' }, svg);
-    el('path', { d: land, fill: 'url(#relief)' }, svg);
-    var rv = el('g', { 'clip-path': 'url(#land)', fill: 'none', stroke: '#2b8fd8', 'stroke-width': 1.6, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, svg);
-    for (var name in GEO_MAP.rivers) el('path', { d: pathOf(GEO_MAP.rivers[name], false), 'stroke-width': name === 'Dunav' ? 2.6 : 1.6 }, rv);
+    el('path', { d: land }, el('clipPath', { id: id + 'Clip' }, defs));
+
+    el('path', { d: land, fill: 'rgba(5,22,48,0.38)', transform: 'translate(0,9)' }, target);          // drop shadow
+    el('path', { d: land, fill: '#1b5e20', stroke: '#1b5e20', 'stroke-width': 5.5, 'stroke-linejoin': 'round', transform: 'translate(0,4.5)' }, target); // 3D rim
+    el('path', { d: land, fill: 'none', stroke: '#fff', 'stroke-width': 5.5, 'stroke-linejoin': 'round' }, target);
+    el('path', { d: land, fill: 'url(#' + id + 'Fill)' }, target);
+    if (detail) {
+      var inner = el('g', { 'clip-path': 'url(#' + id + 'Clip)' }, target);
+      el('path', { d: land, fill: 'none', stroke: 'rgba(255,255,255,0.22)', 'stroke-width': 1.2, 'stroke-dasharray': '4 3' }, inner);
+    }
+    el('path', { d: land, fill: 'url(#' + id + 'Gloss)' }, target);
+    return { cx: (minX + maxX) / 2, cy: (minY + maxY) / 2 };
+  }
+
+  function drawMap() {
+    drawLand(svg, 'm', true);
     marks = el('g', {}, svg);
+    var logo = document.getElementById('logoMap'), c = drawLand(logo, 'l', false);
+    el('path', { d: PIN, fill: '#d62828', stroke: '#fff', 'stroke-width': 1.5, transform: 'translate(' + c.cx + ',' + (c.cy + 30) + ') scale(5)' }, logo);
+    el('circle', { cx: c.cx, cy: c.cy + 30 - 55, r: 11, fill: '#fff' }, logo);
   }
 
   function toLatLon(evt) {
@@ -109,11 +125,15 @@
   function mark(lat, lon, cls) {
     var x = px(lon), y = py(lat), g = el('g', { 'class': cls, transform: 'translate(' + x + ',' + y + ')' }, marks);
     if (cls === 'guess') {
-      el('circle', { r: 6, 'class': 'ring' }, g);
-      el('path', { d: 'M-4 -4L4 4M4 -4L-4 4' }, g);
+      for (var i = 0; i < 2; i++) {
+        var r = el('circle', { r: 4, 'class': 'ripple' }, g);
+        el('animate', { attributeName: 'r', from: 4, to: 22, dur: '1.2s', begin: (i * 0.4) + 's', repeatCount: 'indefinite' }, r);
+        el('animate', { attributeName: 'opacity', from: 1, to: 0, dur: '1.2s', begin: (i * 0.4) + 's', repeatCount: 'indefinite' }, r);
+      }
+      el('circle', { r: 4, 'class': 'dot' }, g);
     } else {
-      el('path', { d: 'M0 0C-2-5-6-7-6-11A6 6 0 1 1 6-11C6-7 2-5 0 0Z' }, g);
-      el('circle', { cy: -11, r: 2.2, fill: '#fff' }, g);
+      el('path', { d: PIN, transform: 'scale(1.4)' }, g);
+      el('circle', { cy: -15.4, r: 3, fill: '#fff' }, g);
     }
   }
 
@@ -175,7 +195,7 @@
     var f = Math.max(0, state.left / TIME);
     $('bar').style.width = (f * 100) + '%';
     $('bar').className = f < 0.3 ? 'low' : '';
-    $('clock').textContent = Math.max(0, Math.ceil(state.left)) + 's';
+    $('clock').textContent = '00:' + ('0' + Math.max(0, Math.ceil(state.left))).slice(-2);
   }
 
   function answer(guess) {
@@ -200,7 +220,8 @@
     state.roundPts += pts; state.total += pts;
     $('points').textContent = state.total;
     var fb = $('feedback');
-    fb.textContent = !guess ? 'Isteklo vreme!' : (km < 1 ? 'Pogodak!' : 'Promašaj: ' + Math.round(km) + ' km') + '  +' + pts;
+    fb.textContent = !guess ? '⏱ Isteklo vreme!' : (pts >= 700 ? '✓ ' : pts > 0 ? '' : '✗ ') +
+      (km < 1 ? 'Tačno!' : Math.round(km) + ' km') + '  +' + pts;
     fb.className = pts >= 700 ? 'good' : pts > 0 ? 'ok' : 'bad';
     pending = setTimeout(next, 1800);
   }
@@ -211,11 +232,14 @@
     var passed = state.roundPts >= PASS, last = state.round === GEO_ROUNDS.length - 1;
     if (state.total > (+store.getItem('best') || 0)) store.setItem('best', state.total);
     if (passed && !last) store.setItem('reached', Math.max(+store.getItem('reached') || 0, state.round + 1));
-    $('resTitle').textContent = passed ? (last ? 'Svaka čast! Završio si sve runde!' : 'Runda pređena!') : 'Kraj igre';
+    var ratio = state.roundPts / (state.qs.length * 1000);
+    $('resTitle').textContent = ratio >= 0.8 ? 'Odlično!' : ratio >= 0.6 ? 'Vrlo dobro!' : passed ? 'Bravo!' : 'Probaj ponovo!';
+    $('resMsg').textContent = !passed ? 'Za sledeću rundu treba bar ' + PASS + ' poena.' :
+      last ? 'Svaka čast! Završio si sve runde i veoma dobro poznaješ Srbiju!' :
+      'Prešao si rundu „' + GEO_ROUNDS[state.round].name + '”. Sledi: ' + GEO_ROUNDS[state.round + 1].name + '.';
     $('resRound').textContent = state.roundPts + ' / ' + (state.qs.length * 1000);
     $('resTotal').textContent = state.total;
     $('resNext').style.display = passed && !last ? '' : 'none';
-    $('resNote').textContent = passed ? '' : 'Za sledeću rundu treba bar ' + PASS + ' poena.';
     show('result');
   }
 

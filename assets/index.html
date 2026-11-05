@@ -8,9 +8,20 @@
 </head>
 <body>
 <div id="menu" class="screen">
-  <h1>Geo<span>Srbija</span></h1>
+  <svg class="scenery" viewBox="0 0 400 160" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0 110L40 70 70 92 115 45 160 95 205 60 250 100 300 40 350 88 400 62V160H0Z" fill="#7fa8d6"/>
+    <path d="M115 45L104 58 112 56 118 62 124 55 131 60ZM300 40L289 54 297 52 303 58 309 51 316 56ZM205 60L197 70 204 68 209 73 214 68Z" fill="#fff"/>
+    <path d="M0 125C60 100 110 118 170 108S290 95 400 112V160H0Z" fill="#5fae4e"/>
+    <path d="M0 140C80 122 150 140 230 128S340 120 400 132V160H0Z" fill="#2e7d32"/>
+    <path d="M150 160C175 148 215 146 250 138 280 132 320 130 345 128 310 136 270 140 240 148 215 154 200 158 195 160Z" fill="#4fb3f0"/>
+  </svg>
+  <div class="logo">
+    <svg id="logoMap" aria-hidden="true"></svg>
+    <h1>Geo<span>Srbija</span></h1>
+    <div class="ribbon">KVIZ O SRBIJI</div>
+  </div>
   <p class="tag">Koliko dobro poznaješ Srbiju?</p>
-  <button id="play" class="primary">▶ Igraj</button>
+  <button id="play" class="btn yellow">▶&nbsp; Igraj kviz</button>
   <div id="rounds"></div>
   <p class="best">🏆 Rekord: <b id="best">0</b></p>
 </div>
@@ -19,28 +30,32 @@
   <div class="panel">
     <div class="top">
       <button id="quit" aria-label="Nazad">‹</button>
-      <span id="roundName"></span>
+      <span id="qNum"></span>
+      <span class="spacer"></span>
     </div>
     <div class="timer"><div id="bar"></div></div>
     <div class="card">
-      <small id="qNum"></small>
-      <small>Pronađi na mapi:</small>
+      <small id="roundName"></small>
+      <span class="ask">Pronađi na mapi:</span>
       <strong id="target"></strong>
     </div>
-    <div class="stats"><span>⏱ <b id="clock"></b></span><span><b id="points">0</b> poena</span></div>
+    <div class="stats"><span>⏱ <b id="clock">00:15</b></span><span class="pts"><b id="points">0</b> poena</span></div>
+  </div>
+  <div class="mapwrap">
+    <svg id="map" preserveAspectRatio="xMidYMid meet" aria-label="Mapa Srbije"></svg>
     <div id="feedback" role="status" aria-live="polite"></div>
   </div>
-  <div class="mapwrap"><svg id="map" preserveAspectRatio="xMidYMid meet" aria-label="Mapa Srbije"></svg></div>
 </div>
 
 <div id="result" class="screen" style="display:none">
+  <h3>Rezultat</h3>
   <div class="trophy">🏆</div>
+  <div class="ribbon big" id="resRound"></div>
   <h2 id="resTitle"></h2>
-  <p>Runda: <b id="resRound"></b></p>
+  <p id="resMsg"></p>
   <p>Ukupno: <b id="resTotal"></b> poena</p>
-  <p id="resNote" class="note"></p>
-  <button id="resNext" class="primary">Sledeća runda ›</button>
-  <button id="resMenu">Glavni meni</button>
+  <button id="resNext" class="btn yellow">Sledeća runda ›</button>
+  <button id="resMenu" class="btn white">⌂&nbsp; Glavni meni</button>
 </div>
 
 <script src="map.js"></script>

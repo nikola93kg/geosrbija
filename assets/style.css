@@ -1,76 +1,107 @@
+@font-face { font-family: "Nunito"; src: url(fonts/Nunito.ttf) format("truetype"); font-weight: 200 1000; }
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 html, body { margin: 0; height: 100%; overflow: hidden; }
 body {
-  font-family: "Nunito", "Roboto", "Helvetica Neue", Arial, sans-serif;
+  font-family: "Nunito", "Roboto", Arial, sans-serif;
   color: #0a2e5d;
-  background: #9fd3f5;
-  background: radial-gradient(circle at 50% 40%, #e9f3ff 0%, #9fd3f5 60%, #5fb1ea 100%);
+  background: #0a2e5d;
   -webkit-user-select: none; user-select: none;
 }
 button { font: inherit; cursor: pointer; border: 0; }
+.screen { position: relative; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 16px; }
 
-.screen { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 16px; }
-
-/* menu */
-h1 { font-size: 52px; margin: 0; color: #0a2e5d; text-shadow: 0 3px 0 #fff; }
-h1 span { color: #d62828; }
-.tag { margin: 4px 0 20px; font-size: 18px; }
-.primary, #rounds button, #resMenu {
-  display: block; width: 100%; max-width: 360px; margin: 6px auto; padding: 14px 18px;
-  border-radius: 28px; font-size: 18px; font-weight: bold; text-align: left;
+/* shared pill buttons */
+.btn, #rounds button {
+  display: block; width: 100%; max-width: 340px; margin: 7px auto; padding: 13px 20px;
+  border-radius: 30px; font-size: 19px; font-weight: 800; text-align: center;
 }
-.primary { background: #ffc107; color: #0a2e5d; text-align: center; font-size: 22px; box-shadow: 0 4px 0 #c79100; }
-#rounds { width: 100%; max-width: 360px; margin-top: 8px; }
-#rounds button { background: #0a2e5d; color: #fff; }
+.btn.yellow { background: #ffc107; color: #0a2e5d; font-size: 22px; box-shadow: 0 4px 0 #c79100, 0 6px 14px rgba(0,0,0,.2); }
+.btn.white { background: #fff; color: #0a2e5d; box-shadow: 0 4px 12px rgba(10,46,93,.25); }
+.btn:active, #rounds button:active { transform: translateY(2px); }
+
+/* ---------- menu ---------- */
+#menu { background: linear-gradient(#1e88e5 0%, #6fb6f2 45%, #e9f3ff 100%); overflow-y: auto; }
+.scenery { position: absolute; left: 0; bottom: 0; width: 100%; height: 34%; }
+#menu > *:not(.scenery) { position: relative; }
+.logo { text-align: center; margin-bottom: 4px; }
+#logoMap { width: 92px; height: 100px; display: block; margin: 0 auto -18px; overflow: visible; }
+h1 {
+  margin: 0; font-size: 60px; font-weight: 900; line-height: 1; color: #0a2e5d; letter-spacing: -1px;
+  text-shadow: -3px -3px 0 #fff, 3px -3px 0 #fff, -3px 3px 0 #fff, 3px 3px 0 #fff, 0 6px 10px rgba(0,0,0,.25);
+}
+h1 span { color: #d62828; }
+.ribbon {
+  display: inline-block; margin-top: 6px; padding: 5px 22px; background: #0a2e5d; color: #fff;
+  font-weight: 900; letter-spacing: 2px; font-size: 15px; border-radius: 6px; border: 2px solid #fff;
+  box-shadow: 0 3px 8px rgba(0,0,0,.25);
+}
+.tag { margin: 10px 0 14px; font-size: 19px; font-weight: 800; color: #fff; text-shadow: 0 2px 4px rgba(10,46,93,.5); }
+#rounds { width: 100%; max-width: 340px; }
+#rounds button { background: #0a2e5d; color: #fff; text-align: left; font-size: 17px; padding: 11px 20px; margin: 6px auto; box-shadow: 0 3px 8px rgba(10,46,93,.3); }
 #rounds button b { display: inline-block; width: 28px; color: #ffc107; }
-#rounds button.locked { background: #7d8ea6; color: #dfe6ef; cursor: default; }
+#rounds button.locked { background: rgba(10,46,93,.45); color: rgba(255,255,255,.7); cursor: default; }
 #rounds button span { float: right; }
-.best { font-size: 18px; }
+.best { font-size: 18px; font-weight: 800; color: #fff; background: rgba(10,46,93,.55); padding: 6px 18px; border-radius: 20px; }
 
-/* game */
-#game { flex-direction: column; align-items: stretch; justify-content: flex-start; padding: 8px; }
+/* ---------- game ---------- */
+#game {
+  flex-direction: column; align-items: stretch; justify-content: flex-start; padding: 10px 12px;
+  background: linear-gradient(#0a2e5d 0%, #1565c0 55%, #1e88e5 100%); color: #fff;
+}
 .panel { flex: 0 0 auto; }
-.top { display: flex; align-items: center; font-weight: bold; font-size: 18px; }
-#quit { background: #0a2e5d; color: #fff; width: 40px; height: 40px; border-radius: 20px; font-size: 26px; line-height: 36px; margin-right: 10px; }
-.timer { height: 10px; background: rgba(255,255,255,.7); border-radius: 5px; margin: 8px 0; overflow: hidden; }
-#bar { height: 100%; background: #ffc107; width: 100%; }
+.top { display: flex; align-items: center; font-weight: 800; font-size: 20px; }
+.top #qNum { flex: 1; text-align: center; }
+.spacer, #quit { width: 42px; height: 42px; }
+#quit { background: rgba(255,255,255,.15); color: #fff; border-radius: 21px; font-size: 30px; line-height: 38px; }
+.timer { height: 10px; background: rgba(255,255,255,.25); border-radius: 5px; margin: 10px 0 12px; overflow: hidden; }
+#bar { height: 100%; background: #ffc107; width: 100%; border-radius: 5px; }
 #bar.low { background: #d62828; }
-.card { background: #fff; border-radius: 16px; padding: 10px 14px; text-align: center; box-shadow: 0 3px 10px rgba(10,46,93,.15); }
-.card small { display: block; font-size: 14px; color: #456; }
-.card strong { display: block; font-size: 30px; line-height: 1.2; }
-.stats { display: flex; justify-content: space-between; font-size: 18px; margin: 8px 4px 0; }
-.stats span:last-child b { color: #2e7d32; }
-#feedback { min-height: 30px; text-align: center; font-weight: bold; font-size: 20px; margin-top: 4px; }
-#feedback.good { color: #2e7d32; }
-#feedback.ok { color: #c77700; }
-#feedback.bad { color: #d62828; }
-.mapwrap { flex: 1 1 auto; position: relative; min-height: 0; }
-#map { position: absolute; top: 0; left: 0; width: 100%; height: 100%; touch-action: none; }
+.card { background: #fff; color: #0a2e5d; border-radius: 18px; padding: 10px 14px 12px; text-align: center; box-shadow: 0 6px 16px rgba(0,0,0,.25); }
+.card small { display: block; font-size: 12px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: #1e88e5; }
+.card .ask { display: block; font-size: 17px; font-weight: 700; }
+.card strong { display: block; font-size: 34px; font-weight: 900; line-height: 1.15; }
+.stats { display: flex; justify-content: space-between; align-items: center; font-size: 20px; font-weight: 800; margin: 10px 4px 0; }
+.pts { color: #ffc107; }
+.mapwrap { flex: 1 1 auto; position: relative; min-height: 0; margin-top: 6px; }
+#map { position: absolute; top: 0; left: 0; width: 100%; height: 100%; touch-action: none; overflow: visible; }
+#feedback {
+  position: absolute; left: 50%; bottom: 8px; transform: translateX(-50%);
+  padding: 9px 20px; border-radius: 26px; font-weight: 900; font-size: 19px; white-space: nowrap;
+  color: #fff; box-shadow: 0 6px 16px rgba(0,0,0,.3); display: none;
+}
+#feedback.good { display: block; background: #2e7d32; }
+#feedback.ok { display: block; background: #f39c12; }
+#feedback.bad { display: block; background: #d62828; }
 
-/* markers */
-.guess .ring { fill: rgba(255,255,255,.6); stroke: #0a2e5d; stroke-width: 1.5; }
-.guess path { stroke: #0a2e5d; stroke-width: 2; stroke-linecap: round; }
-.pin path { fill: #d62828; stroke: #fff; stroke-width: 1; }
-.link { stroke: #0a2e5d; stroke-width: 1.2; stroke-dasharray: 3 3; }
-.river-hit { fill: none; stroke: #d62828; stroke-width: 3.5; stroke-linecap: round; stroke-linejoin: round; }
+/* map markers */
+.ripple { fill: none; stroke: #fff; stroke-width: 1.5; }
+.guess .dot { fill: #fff; stroke: #0a2e5d; stroke-width: 2; }
+.pin path { fill: #d62828; stroke: #fff; stroke-width: 1.2; }
+.link { stroke: #fff; stroke-width: 1.5; stroke-dasharray: 4 3; }
+.river-hit { fill: none; stroke: #1e88e5; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
 
-/* result */
-.trophy { font-size: 80px; }
-#result h2 { font-size: 30px; margin: 0 0 10px; text-align: center; }
-#result p { font-size: 20px; margin: 4px; }
-#result .note { color: #d62828; font-size: 16px; }
-#resMenu { background: #fff; color: #0a2e5d; text-align: center; }
+/* ---------- result ---------- */
+#result { background: linear-gradient(#0a2e5d 0%, #1565c0 60%, #1e88e5 100%); color: #fff; text-align: center; overflow-y: auto; }
+#result h3 { margin: 0; font-size: 24px; font-weight: 900; }
+.trophy { font-size: 96px; line-height: 1.1; filter: drop-shadow(0 6px 10px rgba(0,0,0,.35)); }
+.ribbon.big { background: #d62828; font-size: 26px; padding: 6px 30px; margin: 0 0 10px; letter-spacing: 0; }
+#result h2 { font-size: 34px; font-weight: 900; margin: 4px 0; }
+#result p { font-size: 18px; margin: 4px 0 8px; max-width: 340px; }
 
 /* tablet landscape (Galaxy Note 10.1): panel left, map right */
 @media (orientation: landscape) {
-  #game { flex-direction: row; }
-  .panel { width: 34%; max-width: 380px; padding: 8px 16px 0 8px; }
-  .card strong { font-size: 34px; }
+  #game { flex-direction: row; padding: 16px; }
+  .panel { width: 34%; max-width: 380px; padding-right: 20px; display: flex; flex-direction: column; }
+  .card { padding: 18px 14px; }
+  .card strong { font-size: 40px; }
+  .mapwrap { margin-top: 0; }
+  .scenery { height: 40%; }
 }
 @media (max-height: 640px) {
-  #menu { justify-content: flex-start; overflow-y: auto; }
+  #menu { justify-content: flex-start; }
+  h1 { font-size: 44px; }
+  #logoMap { width: 64px; height: 70px; }
 }
 @media (orientation: landscape) and (max-height: 500px) {
-  h1 { font-size: 36px; }
-  .card strong { font-size: 24px; }
+  .card strong { font-size: 26px; }
 }
