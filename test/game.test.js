@@ -19,11 +19,17 @@ test('nearestOnLines finds segment distance, not just vertex distance', () => {
   assert.ok(Math.abs(n.lon - 20.5) < 1e-6 && Math.abs(n.lat - 44.0) < 1e-6);
 });
 
-test('score: perfect fast guess = 1000, far or timeout = 0, slower = less', () => {
+test('score: perfect fast guess = 1000, far or timeout = 0, slower = less, and 5 difficulty levels exist', () => {
   assert.strictEqual(game.score(0, 15), 1000);
   assert.strictEqual(game.score(150, 15), 0);
   assert.strictEqual(game.score(0, 0), 0);
   assert.ok(game.score(10, 5) < game.score(10, 14));
+  assert.strictEqual(game.GEO_LEVELS.length, 5);
+  for (let i = 1; i < game.GEO_LEVELS.length; i++) {
+    assert.ok(game.GEO_LEVELS[i].pass > game.GEO_LEVELS[i - 1].pass);
+    assert.ok(game.GEO_LEVELS[i].time < game.GEO_LEVELS[i - 1].time);
+    assert.ok(game.GEO_LEVELS[i].zeroKm < game.GEO_LEVELS[i - 1].zeroKm);
+  }
 });
 
 function inside(lon, lat) {

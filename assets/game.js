@@ -1,9 +1,16 @@
 // GeoSrbija game. Plain ES5 so it runs on old Android WebViews.
 (function () {
   var QUESTIONS_PER_ROUND = 10;
-  var TIME = 15;            // seconds per question
-  var ZERO_KM = 100;        // distance at which a guess is worth 0 points
-  var PASS = 4000;          // round points needed to advance (out of 10000)
+  var TIME = 15;            // default seconds per question
+  var ZERO_KM = 100;        // default distance at which a guess is worth 0 points
+
+  var GEO_LEVELS = [
+    { id: 0, title: 'Туриста', sub: 'Почетник', time: 18, zeroKm: 120, pass: 4000, regions: true, slice: [0, 0.65] },
+    { id: 1, title: 'Излетник', sub: 'Аматер', time: 15, zeroKm: 100, pass: 4800, regions: true, slice: [0, 0.85] },
+    { id: 2, title: 'Планинар', sub: 'Средњи', time: 12, zeroKm: 85, pass: 5500, regions: true, slice: [0, 1] },
+    { id: 3, title: 'Географ', sub: 'Тежак', time: 10, zeroKm: 70, pass: 6500, regions: false, slice: [0.25, 1] },
+    { id: 4, title: 'Чувар Србије', sub: 'Експерт', time: 8, zeroKm: 55, pass: 7500, regions: false, slice: [0.35, 1] }
+  ];
 
   // ---------- pure logic ----------
   function haversine(lat1, lon1, lat2, lon2) {
@@ -32,10 +39,11 @@
     return best;
   }
 
-  function score(km, timeLeft) {
+  function score(km, timeLeft, maxTime, zeroKm) {
     if (timeLeft <= 0) return 0;
-    var acc = Math.max(0, 1 - km / ZERO_KM);
-    return Math.round(1000 * acc * (0.5 + 0.5 * Math.min(1, timeLeft / TIME)));
+    var z = zeroKm || ZERO_KM, t = maxTime || TIME;
+    var acc = Math.max(0, 1 - km / z);
+    return Math.round(1000 * acc * (0.5 + 0.5 * Math.min(1, timeLeft / t)));
   }
 
   function shuffle(a) {
@@ -44,7 +52,7 @@
     return a;
   }
 
-  if (typeof module !== 'undefined') module.exports = { haversine: haversine, nearestOnLines: nearestOnLines, score: score, shuffle: shuffle };
+  if (typeof module !== 'undefined') module.exports = { haversine: haversine, nearestOnLines: nearestOnLines, score: score, shuffle: shuffle, GEO_LEVELS: GEO_LEVELS };
   if (typeof document === 'undefined') return;
 
   // ---------- map ----------
@@ -99,7 +107,7 @@
     el('path', { d: land, fill: 'none', stroke: '#fff', 'stroke-width': 5.5, 'stroke-linejoin': 'round' }, target);
     el('path', { d: land, fill: 'url(#' + id + 'Fill)' }, target);
     if (detail && GEO_MAP.regions) {
-      var inner = el('g', { 'clip-path': 'url(#' + id + 'Clip)' }, target);
+      var inner = el('g', { id: id + 'Regions', 'clip-path': 'url(#' + id + 'Clip)' }, target);
       var tints = { VOJ: '#8ef064', BG: '#b8ff8a', SUM: '#3b9c3a', JUG: '#236e27', KOS: '#195c1e' };
       for (var code in GEO_MAP.regions) {
         el('path', {
@@ -167,9 +175,33 @@
     });
   }
 
+  function getLevel() {
+    var idx = +store.getItem('level') || 0;
+    return GEO_LEVELS[idx] || GEO_LEVELS[0];
+  }
+
+  function reachedFor(lvlIdx) {
+    return +store.getItem('reached_l' + lvlIdx) || 0;
+  }
+
   function renderMenu(sub) {
-    var reached = +store.getItem('reached') || 0, list = $('rounds'), recs = $('roundRecords');
-    list.innerHTML = ''; recs.innerHTML = '';
+    var lvl = getLevel(), reached = reachedFor(lvl.id);
+    var lvlBox = $('levels'), list = $('rounds'), recs = $('roundRecords');
+    lvlBox.innerHTML = ''; list.innerHTML = ''; recs.innerHTML = '';
+
+    GEO_LEVELS.forEach(function (l) {
+      var lb = document.createElement('button');
+      lb.className = 'level-btn' + (l.id === lvl.id ? ' active' : '');
+      lb.innerHTML = l.title + '<small>' + l.sub + '</small>';
+      lb.onclick = function () {
+        sfx('click');
+        store.setItem('level', l.id);
+        renderMenu('subRounds');
+      };
+      lvlBox.appendChild(lb);
+    });
+    $('levelInfo').textContent = 'Ниво: ' + lvl.title + ' (' + lvl.sub + ') · ⏱ ' + lvl.time + 'с · Потребно за следећу рунду: ' + lvl.pass + ' п.';
+
     GEO_ROUNDS.forEach(function (r, i) {
       var b = document.createElement('button');
       b.className = 'round' + (i > reached ? ' locked' : '');
@@ -189,54 +221,92 @@
     $('stHits').textContent = +store.getItem('st_hits') || 0;
     var bkm = store.getItem('st_best_km');
     $('stBestKm').textContent = bkm !== null ? bkm + ' км' : '—';
-    $('stUnlocked').textContent = Math.min(GEO_ROUNDS.length, reached + 1) + ' / ' + GEO_ROUNDS.length;
+    $('stUnlocked').textContent = Math.min(GEO_ROUNDS.length, reached + 1) + ' / ' + GEO_ROUNDS.length + ' (' + lvl.title + ')';
     syncSoundUI();
     openSub(typeof sub === 'string' ? sub : null);
     show('menu');
   }
 
+  function pickQuestions(places, lvl) {
+    var n = places.length;
+    var from = Math.min(Math.floor(n * lvl.slice[0]), Math.max(0, n - QUESTIONS_PER_ROUND));
+    var to = Math.max(from + QUESTIONS_PER_ROUND, Math.ceil(n * lvl.slice[1]));
+    return shuffle(places.slice(from, to)).slice(0, QUESTIONS_PER_ROUND);
+  }
+
   function start(round) {
     sfx('click');
-    state = { round: round, total: 0, totalHits: 0, totalQs: 0 };
+    var lvl = getLevel();
+    if (round > reachedFor(lvl.id)) round = reachedFor(lvl.id);
+    state = { level: lvl.id, lvl: lvl, round: round, total: 0, totalHits: 0, totalQs: 0, paused: false };
+    var regEl = $('mRegions');
+    if (regEl) regEl.style.display = lvl.regions ? '' : 'none';
+    $('pauseModal').style.display = 'none';
     startRound();
   }
 
   function startRound() {
     var r = GEO_ROUNDS[state.round];
-    state.qs = shuffle(r.places).slice(0, QUESTIONS_PER_ROUND);
-    state.q = 0; state.roundPts = 0; state.hits = 0;
-    store.setItem('reached', Math.max(+store.getItem('reached') || 0, state.round));
+    state.qs = pickQuestions(r.places, state.lvl);
+    state.q = 0; state.roundPts = 0; state.hits = 0; state.paused = false;
     $('roundIll').src = 'img/' + ROUND_ILLS[state.round];
-    $('roundName').textContent = 'Рунда ' + (state.round + 1) + ' · ' + r.name;
+    $('roundName').textContent = state.lvl.title + ' · Рунда ' + (state.round + 1) + ' · ' + r.name;
     show('game');
     ask();
+  }
+
+  function startTimer() {
+    clearInterval(timer);
+    timer = setInterval(function () {
+      if (state.paused) return;
+      state.left -= 0.1;
+      tick();
+      if (state.left <= 0) answer(null);
+    }, 100);
   }
 
   function ask() {
     marks.innerHTML = '';
     $('feedback').textContent = '';
     $('feedback').className = '';
-    var q = state.qs[state.q];
+    var q = state.qs[state.q], tMax = state.lvl.time;
     $('qNum').textContent = 'Питање ' + (state.q + 1) + ' / ' + state.qs.length;
     $('target').textContent = q[0];
     $('points').textContent = state.total;
-    state.answered = false;
-    state.left = TIME; state.lastSec = TIME;
+    state.answered = false; state.paused = false;
+    state.left = tMax; state.lastSec = tMax;
     tick();
-    clearInterval(timer);
-    timer = setInterval(function () { state.left -= 0.1; tick(); if (state.left <= 0) answer(null); }, 100);
+    startTimer();
   }
 
   function tick() {
-    var f = Math.max(0, state.left / TIME), sec = Math.max(0, Math.ceil(state.left));
+    var tMax = state.lvl.time;
+    var f = Math.max(0, state.left / tMax), sec = Math.max(0, Math.ceil(state.left));
     $('bar').style.width = (f * 100) + '%';
     $('bar').className = f < 0.3 ? 'low' : '';
     $('clock').textContent = '00:' + ('0' + sec).slice(-2);
     if (sec !== state.lastSec) { state.lastSec = sec; if (sec > 0 && sec <= 4) sfx('tick'); }
   }
 
+  function pauseGame() {
+    if (!state || state.answered || state.paused) return;
+    sfx('click');
+    state.paused = true;
+    clearInterval(timer);
+    $('pauseDesc').textContent = 'Ниво: ' + state.lvl.title + ' · Рунда ' + (state.round + 1) + ' (' + GEO_ROUNDS[state.round].name + ')';
+    $('pauseModal').style.display = '';
+  }
+
+  function resumeGame() {
+    if (!state || !state.paused) return;
+    sfx('click');
+    state.paused = false;
+    $('pauseModal').style.display = 'none';
+    startTimer();
+  }
+
   function answer(guess) {
-    if (state.answered) return;
+    if (state.answered || state.paused) return;
     state.answered = true;
     clearInterval(timer);
     if (guess) sfx('tap');
@@ -249,7 +319,7 @@
       tLat = q[1]; tLon = q[2];
       if (guess) km = haversine(guess.lat, guess.lon, tLat, tLon);
     }
-    var pts = guess ? score(km, state.left) : 0;
+    var pts = guess ? score(km, state.left, state.lvl.time, state.lvl.zeroKm) : 0;
     if (guess) {
       el('line', { x1: px(guess.lon), y1: py(guess.lat), x2: px(tLon), y2: py(tLat), 'class': 'link' }, marks);
       mark(guess.lat, guess.lon, 'guess');
@@ -274,14 +344,15 @@
   function next() {
     state.q++;
     if (state.q < state.qs.length) return ask();
-    var passed = state.roundPts >= PASS, last = state.round === GEO_ROUNDS.length - 1;
+    var passReq = state.lvl.pass;
+    var passed = state.roundPts >= passReq, last = state.round === GEO_ROUNDS.length - 1;
     if (state.roundPts > (+store.getItem('best_r' + state.round) || 0)) store.setItem('best_r' + state.round, state.roundPts);
     store.setItem('st_pts', (+store.getItem('st_pts') || 0) + state.roundPts);
     store.setItem('st_hits', (+store.getItem('st_hits') || 0) + state.hits);
-    if (passed && !last) store.setItem('reached', Math.max(+store.getItem('reached') || 0, state.round + 1));
 
-    // Advance directly to the next round; show Result screen only when the entire game finishes.
-    if (!last) {
+    // Unlock and advance to the next round ONLY if the player reached the required points for this round!
+    if (passed && !last) {
+      store.setItem('reached_l' + state.level, Math.max(reachedFor(state.level), state.round + 1));
       sfx('win');
       state.round++;
       return startRound();
@@ -292,18 +363,18 @@
 
     var hitRatio = state.totalHits / state.totalQs;
     var ptsRatio = state.total / (state.totalQs * 1000);
-    var great = hitRatio >= 0.8 || ptsRatio >= 0.7;
-    var good = hitRatio >= 0.6 || ptsRatio >= 0.5;
-    var solid = hitRatio >= 0.4 || ptsRatio >= 0.35;
-    $('resTitle').textContent = great ? 'Одлично!' : good ? 'Врло добро!' : solid ? 'Добро!' : 'Може то боље!';
-    $('resMsg').textContent = great ? 'Веома добро познајеш географију Србије!' :
-      good ? 'Добро познајеш географију Србије, само тако настави!' :
-      solid ? 'Солидно знање географије Србије!' :
-      'Вежбај још мало да боље упознаш географију Србије!';
+    var great = passed && (hitRatio >= 0.8 || ptsRatio >= 0.7);
+    var good = passed && (hitRatio >= 0.6 || ptsRatio >= 0.5);
+    $('resTitle').textContent = !passed ? 'Недовољно поена!' : great ? 'Одлично!' : good ? 'Врло добро!' : 'Добро!';
+    $('resMsg').textContent = !passed ?
+      'У рунди „' + GEO_ROUNDS[state.round].name + '“ освојио си ' + state.roundPts + ' поена, а за прелазак у рунду ' + (state.round + 2 <= GEO_ROUNDS.length ? (state.round + 2) : state.round + 1) + ' (' + state.lvl.title + ') потребно је бар ' + passReq + ' поена!' :
+      great ? 'Веома добро познајеш географију Србије! Прешао си цео квиз!' :
+      good ? 'Добро познајеш географију Србије! Прешао си све рунде!' :
+      'Честитамо, успешно си завршио све рунде квиза!';
     $('resRibbon').textContent = state.totalHits + ' / ' + state.totalQs;
     $('resTotal').textContent = state.total;
     $('lblShare').textContent = 'Подели резултат';
-    sfx(solid ? 'win' : 'lose');
+    sfx(passed ? 'win' : 'lose');
     show('result');
   }
 
@@ -334,10 +405,14 @@
     b.onclick = function () { sfx('click'); openSub(null); };
   });
   $('play').onclick = function () { start(0); };
-  $('resRetry').onclick = function () { start(0); };
+  $('btnPause').onclick = pauseGame;
+  $('btnResume').onclick = resumeGame;
+  $('btnRestart').onclick = function () { start(state ? state.round : 0); };
+  $('btnPauseMenu').onclick = function () { sfx('click'); clearInterval(timer); clearTimeout(pending); state = null; $('pauseModal').style.display = 'none'; renderMenu(); };
+  $('resRetry').onclick = function () { start(state && state.roundPts < state.lvl.pass ? state.round : 0); };
   $('resShare').onclick = function () {
     sfx('click');
-    var txt = 'ГеоСрбија 🇷🇸 — Резултат: ' + state.totalHits + '/' + state.totalQs + ' (' + state.total + ' поена)!';
+    var txt = 'ГеоСрбија 🇷🇸 (' + state.lvl.title + ') — Резултат: ' + state.totalHits + '/' + state.totalQs + ' (' + state.total + ' поена)!';
     if (navigator.share) {
       navigator.share({ title: 'ГеоСрбија', text: txt })['catch'](function () {});
     } else if (navigator.clipboard && navigator.clipboard.writeText) {

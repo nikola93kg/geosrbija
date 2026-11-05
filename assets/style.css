@@ -129,6 +129,44 @@ button { font: inherit; cursor: pointer; border: 0; }
   font-weight: 700;
 }
 
+.level-bar {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 5px;
+  margin-bottom: 6px;
+}
+.level-btn {
+  background: rgba(15, 58, 108, 0.85);
+  color: rgba(255, 255, 255, 0.85);
+  border: 1.5px solid rgba(135, 205, 255, 0.35);
+  border-radius: 13px;
+  padding: 6px 4px;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.15;
+}
+.level-btn small {
+  display: block;
+  font-size: 10px;
+  font-weight: 600;
+  opacity: 0.78;
+}
+.level-btn.active {
+  background: linear-gradient(180deg, #ffdf40 0%, #ffc107 60%, #f2a100 100%);
+  color: #0a2e5d;
+  border-color: #ffe97d;
+  box-shadow: 0 2px 8px rgba(255, 193, 7, 0.45);
+}
+.level-btn.active small { opacity: 0.9; }
+.level-info {
+  margin: 0 0 8px;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+  color: #cde7ff;
+}
+
 #rounds {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -204,11 +242,33 @@ button { font: inherit; cursor: pointer; border: 0; }
 .panel { flex: 0 0 auto; }
 .top { display: flex; align-items: center; font-weight: 800; font-size: 20px; }
 .top #qNum { flex: 1; text-align: center; }
-#quit, #mute {
+.top-actions { display: flex; gap: 8px; }
+#quit, #mute, #btnPause {
   width: 42px; height: 42px; background: rgba(255, 255, 255, 0.18); color: #fff;
   border-radius: 21px; font-size: 24px; line-height: 40px; text-align: center;
 }
-#mute { font-size: 19px; }
+#mute, #btnPause { font-size: 18px; }
+.pause-modal {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 20;
+  background: rgba(6, 24, 52, 0.88);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.pause-card {
+  max-width: 380px;
+  text-align: center;
+}
+.pause-card h3 {
+  margin: 0 0 8px;
+  font-size: 26px;
+  font-weight: 800;
+  color: #ffc107;
+}
+.pause-card .menu-btn { max-width: 100%; }
 .timer { height: 11px; background: rgba(255, 255, 255, 0.25); border-radius: 6px; margin: 10px 0 12px; overflow: hidden; }
 #bar { height: 100%; background: #ffc107; width: 100%; border-radius: 6px; }
 #bar.low { background: #ef5350; }
@@ -368,6 +428,9 @@ button { font: inherit; cursor: pointer; border: 0; }
   .sub-head h3 { font-size: 24px; }
   .head-ico { width: 30px; height: 30px; }
   .sub-back { font-size: 17px; padding: 8px 18px; }
+  .level-btn { padding: 8px 6px; font-size: 15px; border-radius: 15px; }
+  .level-btn small { font-size: 12px; }
+  .level-info { font-size: 15px; margin-bottom: 10px; }
   .menu-btn.compact { padding: 14px 24px; font-size: 21px; }
   #rounds { gap: 10px; margin-top: 10px; }
   #rounds button {
