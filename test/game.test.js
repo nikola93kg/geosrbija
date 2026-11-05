@@ -43,9 +43,13 @@ test('six rounds with >= 10 questions, monasteries 3rd, villages 5th, rivers las
   ROUNDS.forEach((r) => assert.ok(r.places.length >= 10, r.name));
 });
 
-test('every place lies inside Serbia (incl. Kosovo) and every river has geometry', () => {
+test('every place lies inside Serbia (incl. Kosovo), every river and region has geometry, and SFX exist', () => {
   ROUNDS.forEach((r) => r.places.forEach((p) => {
     if (r.rivers) assert.ok(GEO_MAP.rivers[p[0]], 'missing river ' + p[0]);
     else assert.ok(inside(p[2], p[1]), p[0] + ' is outside the map');
   }));
+  assert.deepStrictEqual(Object.keys(GEO_MAP.regions), ['VOJ', 'BG', 'SUM', 'JUG', 'KOS']);
+  ['click', 'tick', 'good', 'ok', 'bad', 'win', 'lose'].forEach((k) => {
+    assert.ok(fs.existsSync(path.join(__dirname, '../assets/sfx', k + '.wav')), 'missing sfx ' + k);
+  });
 });

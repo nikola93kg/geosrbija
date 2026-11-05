@@ -98,9 +98,16 @@
     el('path', { d: land, fill: '#1b5e20', stroke: '#1b5e20', 'stroke-width': 5.5, 'stroke-linejoin': 'round', transform: 'translate(0,4.5)' }, target); // 3D rim
     el('path', { d: land, fill: 'none', stroke: '#fff', 'stroke-width': 5.5, 'stroke-linejoin': 'round' }, target);
     el('path', { d: land, fill: 'url(#' + id + 'Fill)' }, target);
-    if (detail) {
+    if (detail && GEO_MAP.regions) {
       var inner = el('g', { 'clip-path': 'url(#' + id + 'Clip)' }, target);
-      el('path', { d: land, fill: 'none', stroke: 'rgba(255,255,255,0.22)', 'stroke-width': 1.2, 'stroke-dasharray': '4 3' }, inner);
+      var tints = { VOJ: '#8ef064', BG: '#b8ff8a', SUM: '#3b9c3a', JUG: '#236e27', KOS: '#195c1e' };
+      for (var code in GEO_MAP.regions) {
+        el('path', {
+          d: pathOf([GEO_MAP.regions[code]], true),
+          fill: tints[code] || 'none', 'fill-opacity': 0.18,
+          stroke: 'rgba(255,255,255,0.42)', 'stroke-width': 1.4, 'stroke-dasharray': '4 2.5', 'stroke-linejoin': 'round'
+        }, inner);
+      }
     }
     el('path', { d: land, fill: 'url(#' + id + 'Gloss)' }, target);
     return { cx: (minX + maxX) / 2, cy: (minY + maxY) / 2 };
@@ -140,34 +147,15 @@
   // ---------- game state & UI ----------
   var $ = function (id) { return document.getElementById(id); };
   var store = window.localStorage;
-  var state = null, timer = null, pending = null, actx = null;
-
-  var SFX = {
-    click: [[660, 0, 0.05, 'sine', 0.15]],
-    tick:  [[880, 0, 0.04, 'sine', 0.12]],
-    good:  [[523, 0, 0.1, 'triangle', 0.25], [659, 0.08, 0.1, 'triangle', 0.25], [784, 0.16, 0.18, 'triangle', 0.28], [1047, 0.26, 0.28, 'triangle', 0.3]],
-    ok:    [[440, 0, 0.12, 'triangle', 0.22], [554, 0.1, 0.2, 'triangle', 0.22]],
-    bad:   [[311, 0, 0.16, 'sawtooth', 0.14], [233, 0.14, 0.26, 'sawtooth', 0.14]],
-    win:   [[523, 0, 0.12, 'triangle', 0.28], [659, 0.1, 0.12, 'triangle', 0.28], [784, 0.2, 0.12, 'triangle', 0.28], [1047, 0.32, 0.38, 'triangle', 0.32]],
-    lose:  [[392, 0, 0.15, 'triangle', 0.22], [349, 0.14, 0.15, 'triangle', 0.22], [311, 0.28, 0.3, 'triangle', 0.22]]
-  };
+  var state = null, timer = null, pending = null, sounds = {};
+  ['click', 'tick', 'good', 'ok', 'bad', 'win', 'lose'].forEach(function (k) {
+    var a = new Audio('sfx/' + k + '.wav');
+    a.preload = 'auto';
+    sounds[k] = a;
+  });
   function sfx(name) {
-    if (+store.getItem('muted')) return;
-    try {
-      var C = window.AudioContext || window.webkitAudioContext;
-      if (!C) return;
-      if (!actx) actx = new C();
-      if (actx.state === 'suspended') actx.resume();
-      var t0 = actx.currentTime;
-      (SFX[name] || []).forEach(function (n) {
-        var o = actx.createOscillator(), g = actx.createGain();
-        o.type = n[3]; o.frequency.value = n[0];
-        g.gain.setValueAtTime(n[4], t0 + n[1]);
-        g.gain.exponentialRampToValueAtTime(0.001, t0 + n[1] + n[2]);
-        o.connect(g); g.connect(actx.destination);
-        o.start(t0 + n[1]); o.stop(t0 + n[1] + n[2]);
-      });
-    } catch (e) {}
+    if (+store.getItem('muted') || !sounds[name]) return;
+    try { sounds[name].currentTime = 0; sounds[name].play(); } catch (e) {}
   }
 
   function show(screen) {

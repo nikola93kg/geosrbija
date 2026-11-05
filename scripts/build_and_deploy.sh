@@ -17,6 +17,7 @@ if [ ! -f "$KEYSTORE" ]; then
 fi
 
 [ -f res/mipmap-mdpi/ic_launcher.png ] || python3 scripts/make_icon.py
+[ -f assets/sfx/good.wav ] || python3 scripts/make_sfx.py
 
 "$BUILD_TOOLS/aapt2" compile --dir res -o build/compiled_res.zip
 "$BUILD_TOOLS/aapt2" link -I "$PLATFORM" --manifest AndroidManifest.xml -A assets \
