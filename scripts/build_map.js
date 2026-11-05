@@ -107,25 +107,25 @@ function pick(file, name) {
 }
 
 const rivers = {
-  'Dunav': pick('rivers.json', 'Danube'),
-  'Sava': pick('rivers.json', 'Sava'),
-  'Tisa': pick('rivers.json', 'Tisa'),
-  'Drina': pick('rivers.json', 'Drina'),
-  'Tamiš': pick('rivers_eu.json', 'Timiş'),
-  'Zapadna Morava': pick('rivers_eu.json', 'Golijska Moravica'),
-  'Timok': pick('rivers_eu.json', 'Beli Timok'),
-  'Nišava': pick('rivers_eu.json', 'Nišava'),
-  'Lim': pick('rivers_eu.json', 'Lim'),
-  'Sitnica': pick('rivers_eu.json', 'Sitnica'),
-  'Beli Drim': pick('rivers_eu.json', 'Beli Drim'),
+  'Дунав': pick('rivers.json', 'Danube'),
+  'Сава': pick('rivers.json', 'Sava'),
+  'Тиса': pick('rivers.json', 'Tisa'),
+  'Дрина': pick('rivers.json', 'Drina'),
+  'Тамиш': pick('rivers_eu.json', 'Timiş'),
+  'Западна Морава': pick('rivers_eu.json', 'Golijska Moravica'),
+  'Тимок': pick('rivers_eu.json', 'Beli Timok'),
+  'Нишава': pick('rivers_eu.json', 'Nišava'),
+  'Лим': pick('rivers_eu.json', 'Lim'),
+  'Ситница': pick('rivers_eu.json', 'Sitnica'),
+  'Бели Дрим': pick('rivers_eu.json', 'Beli Drim'),
   // Not in Natural Earth: traced by hand through towns on its banks.
-  'Ibar': [[[20.43, 42.95], [20.58, 42.93], [20.87, 42.89], [20.8, 43.1], [20.61, 43.29], [20.61, 43.47], [20.69, 43.73]]],
+  'Ибар': [[[20.43, 42.95], [20.58, 42.93], [20.87, 42.89], [20.8, 43.1], [20.61, 43.29], [20.61, 43.47], [20.69, 43.73]]],
 };
 // Natural Earth "Morava" = Južna + Velika Morava; they meet near Stalać (lat ~43.67).
 const morava = pick('rivers.json', 'Morava');
 const STALAC = 43.67;
-rivers['Južna Morava'] = morava.map((l) => l.filter((p) => p[1] <= STALAC + 0.01)).filter((l) => l.length > 1);
-rivers['Velika Morava'] = morava.map((l) => l.filter((p) => p[1] >= STALAC - 0.01)).filter((l) => l.length > 1);
+rivers['Јужна Морава'] = morava.map((l) => l.filter((p) => p[1] <= STALAC + 0.01)).filter((l) => l.length > 1);
+rivers['Велика Морава'] = morava.map((l) => l.filter((p) => p[1] >= STALAC - 0.01)).filter((l) => l.length > 1);
 
 Object.keys(rivers).forEach((k) => { if (!rivers[k].length) throw new Error('No geometry for river ' + k); });
 

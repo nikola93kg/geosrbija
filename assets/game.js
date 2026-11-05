@@ -148,7 +148,7 @@
   var $ = function (id) { return document.getElementById(id); };
   var store = window.localStorage;
   var state = null, timer = null, pending = null, sounds = {};
-  ['click', 'tick', 'good', 'ok', 'bad', 'win', 'lose'].forEach(function (k) {
+  ['click', 'tap', 'tick', 'good', 'ok', 'bad', 'win', 'lose'].forEach(function (k) {
     var a = new Audio('sfx/' + k + '.wav');
     a.preload = 'auto';
     sounds[k] = a;
@@ -169,7 +169,7 @@
       var b = document.createElement('button');
       b.className = 'round' + (i > reached ? ' locked' : '');
       b.disabled = i > reached;
-      b.innerHTML = '<b>' + (i + 1) + '</b> ' + r.name + (i > reached ? ' <span>🔒</span>' : '');
+      b.innerHTML = '<b>' + (i + 1) + '</b> ' + r.name + (i > reached ? ' <span>🔒</span>' : ' <span>›</span>');
       b.onclick = function () { start(i); };
       list.appendChild(b);
     });
@@ -188,7 +188,7 @@
     state.qs = shuffle(r.places).slice(0, QUESTIONS_PER_ROUND);
     state.q = 0; state.roundPts = 0;
     store.setItem('reached', Math.max(+store.getItem('reached') || 0, state.round));
-    $('roundName').textContent = 'Runda ' + (state.round + 1) + ' · ' + r.name;
+    $('roundName').textContent = 'Рунда ' + (state.round + 1) + ' · ' + r.name;
     show('game');
     ask();
   }
@@ -198,7 +198,7 @@
     $('feedback').textContent = '';
     $('feedback').className = '';
     var q = state.qs[state.q];
-    $('qNum').textContent = 'Pitanje ' + (state.q + 1) + '/' + state.qs.length;
+    $('qNum').textContent = 'Питање ' + (state.q + 1) + ' / ' + state.qs.length;
     $('target').textContent = q[0];
     $('points').textContent = state.total;
     state.answered = false;
@@ -220,6 +220,7 @@
     if (state.answered) return;
     state.answered = true;
     clearInterval(timer);
+    if (guess) sfx('tap');
     var q = state.qs[state.q], isRiver = GEO_ROUNDS[state.round].rivers, km = Infinity, tLat, tLon;
     if (isRiver) {
       var lines = GEO_MAP.rivers[q[0]];
@@ -238,10 +239,10 @@
     state.roundPts += pts; state.total += pts;
     $('points').textContent = state.total;
     var fb = $('feedback'), kind = pts >= 700 ? 'good' : pts > 0 ? 'ok' : 'bad';
-    fb.textContent = !guess ? '⏱ Isteklo vreme!' : (pts >= 700 ? '✓ ' : pts > 0 ? '' : '✗ ') +
-      (km < 1 ? 'Tačno!' : Math.round(km) + ' km') + '  +' + pts;
+    fb.textContent = !guess ? '⏱ Истекло време!' : (pts >= 700 ? '✓ ' : pts > 0 ? '' : '✗ ') +
+      (km < 1 ? 'Тачно!' : Math.round(km) + ' км') + '  +' + pts;
     fb.className = kind;
-    sfx(kind);
+    setTimeout(function () { sfx(kind); }, guess ? 90 : 0);
     pending = setTimeout(next, 1800);
   }
 
@@ -252,13 +253,14 @@
     if (state.total > (+store.getItem('best') || 0)) store.setItem('best', state.total);
     if (passed && !last) store.setItem('reached', Math.max(+store.getItem('reached') || 0, state.round + 1));
     var ratio = state.roundPts / (state.qs.length * 1000);
-    $('resTitle').textContent = ratio >= 0.8 ? 'Odlično!' : ratio >= 0.6 ? 'Vrlo dobro!' : passed ? 'Bravo!' : 'Probaj ponovo!';
-    $('resMsg').textContent = !passed ? 'Za sledeću rundu treba bar ' + PASS + ' poena.' :
-      last ? 'Svaka čast! Završio si sve runde i veoma dobro poznaješ Srbiju!' :
-      'Prešao si rundu „' + GEO_ROUNDS[state.round].name + '”. Sledi: ' + GEO_ROUNDS[state.round + 1].name + '.';
+    $('resTitle').textContent = ratio >= 0.8 ? 'Одлично!' : ratio >= 0.6 ? 'Врло добро!' : passed ? 'Браво!' : 'Пробај поново!';
+    $('resMsg').textContent = !passed ? 'За следећу рунду треба бар ' + PASS + ' поена.' :
+      last ? 'Свака част! Одлично познајеш географију Србије!' :
+      'Прешао си рунду „' + GEO_ROUNDS[state.round].name + '”. Следи: ' + GEO_ROUNDS[state.round + 1].name + '.';
     $('resRound').textContent = state.roundPts + ' / ' + (state.qs.length * 1000);
     $('resTotal').textContent = state.total;
     $('resNext').style.display = passed && !last ? '' : 'none';
+    $('resRetry').style.display = !passed || last ? '' : 'none';
     sfx(passed ? 'win' : 'lose');
     show('result');
   }
@@ -272,6 +274,7 @@
   svg.addEventListener('mousedown', onTap);
   $('play').onclick = function () { start(0); };
   $('resNext').onclick = function () { sfx('click'); state.round++; startRound(); };
+  $('resRetry').onclick = function () { sfx('click'); startRound(); };
   $('resMenu').onclick = function () { sfx('click'); renderMenu(); };
   $('quit').onclick = function () { sfx('click'); clearInterval(timer); clearTimeout(pending); state = null; renderMenu(); };
   $('mute').textContent = +store.getItem('muted') ? '🔇' : '🔊';

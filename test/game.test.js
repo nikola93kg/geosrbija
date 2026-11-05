@@ -37,9 +37,9 @@ function inside(lon, lat) {
   return hit;
 }
 
-test('six rounds with >= 10 questions, monasteries 3rd, villages 5th, rivers last', () => {
+test('six rounds with >= 10 questions in Serbian Cyrillic, monasteries 3rd, villages 5th, rivers last', () => {
   assert.deepStrictEqual(ROUNDS.map((r) => r.name),
-    ['Veliki gradovi', 'Manji gradovi', 'Manastiri', 'Planine', 'Varošice i sela', 'Reke']);
+    ['Велики градови', 'Мањи градови', 'Манастири', 'Планине', 'Варошице и села', 'Реке']);
   ROUNDS.forEach((r) => assert.ok(r.places.length >= 10, r.name));
 });
 
@@ -49,7 +49,7 @@ test('every place lies inside Serbia (incl. Kosovo), every river and region has 
     else assert.ok(inside(p[2], p[1]), p[0] + ' is outside the map');
   }));
   assert.deepStrictEqual(Object.keys(GEO_MAP.regions), ['VOJ', 'BG', 'SUM', 'JUG', 'KOS']);
-  ['click', 'tick', 'good', 'ok', 'bad', 'win', 'lose'].forEach((k) => {
+  ['click', 'tap', 'tick', 'good', 'ok', 'bad', 'win', 'lose'].forEach((k) => {
     assert.ok(fs.existsSync(path.join(__dirname, '../assets/sfx', k + '.wav')), 'missing sfx ' + k);
   });
 });
