@@ -1,0 +1,76 @@
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { margin: 0; height: 100%; overflow: hidden; }
+body {
+  font-family: "Nunito", "Roboto", "Helvetica Neue", Arial, sans-serif;
+  color: #0a2e5d;
+  background: #9fd3f5;
+  background: radial-gradient(circle at 50% 40%, #e9f3ff 0%, #9fd3f5 60%, #5fb1ea 100%);
+  -webkit-user-select: none; user-select: none;
+}
+button { font: inherit; cursor: pointer; border: 0; }
+
+.screen { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 16px; }
+
+/* menu */
+h1 { font-size: 52px; margin: 0; color: #0a2e5d; text-shadow: 0 3px 0 #fff; }
+h1 span { color: #d62828; }
+.tag { margin: 4px 0 20px; font-size: 18px; }
+.primary, #rounds button, #resMenu {
+  display: block; width: 100%; max-width: 360px; margin: 6px auto; padding: 14px 18px;
+  border-radius: 28px; font-size: 18px; font-weight: bold; text-align: left;
+}
+.primary { background: #ffc107; color: #0a2e5d; text-align: center; font-size: 22px; box-shadow: 0 4px 0 #c79100; }
+#rounds { width: 100%; max-width: 360px; margin-top: 8px; }
+#rounds button { background: #0a2e5d; color: #fff; }
+#rounds button b { display: inline-block; width: 28px; color: #ffc107; }
+#rounds button.locked { background: #7d8ea6; color: #dfe6ef; cursor: default; }
+#rounds button span { float: right; }
+.best { font-size: 18px; }
+
+/* game */
+#game { flex-direction: column; align-items: stretch; justify-content: flex-start; padding: 8px; }
+.panel { flex: 0 0 auto; }
+.top { display: flex; align-items: center; font-weight: bold; font-size: 18px; }
+#quit { background: #0a2e5d; color: #fff; width: 40px; height: 40px; border-radius: 20px; font-size: 26px; line-height: 36px; margin-right: 10px; }
+.timer { height: 10px; background: rgba(255,255,255,.7); border-radius: 5px; margin: 8px 0; overflow: hidden; }
+#bar { height: 100%; background: #ffc107; width: 100%; }
+#bar.low { background: #d62828; }
+.card { background: #fff; border-radius: 16px; padding: 10px 14px; text-align: center; box-shadow: 0 3px 10px rgba(10,46,93,.15); }
+.card small { display: block; font-size: 14px; color: #456; }
+.card strong { display: block; font-size: 30px; line-height: 1.2; }
+.stats { display: flex; justify-content: space-between; font-size: 18px; margin: 8px 4px 0; }
+.stats span:last-child b { color: #2e7d32; }
+#feedback { min-height: 30px; text-align: center; font-weight: bold; font-size: 20px; margin-top: 4px; }
+#feedback.good { color: #2e7d32; }
+#feedback.ok { color: #c77700; }
+#feedback.bad { color: #d62828; }
+.mapwrap { flex: 1 1 auto; position: relative; min-height: 0; }
+#map { position: absolute; top: 0; left: 0; width: 100%; height: 100%; touch-action: none; }
+
+/* markers */
+.guess .ring { fill: rgba(255,255,255,.6); stroke: #0a2e5d; stroke-width: 1.5; }
+.guess path { stroke: #0a2e5d; stroke-width: 2; stroke-linecap: round; }
+.pin path { fill: #d62828; stroke: #fff; stroke-width: 1; }
+.link { stroke: #0a2e5d; stroke-width: 1.2; stroke-dasharray: 3 3; }
+.river-hit { fill: none; stroke: #d62828; stroke-width: 3.5; stroke-linecap: round; stroke-linejoin: round; }
+
+/* result */
+.trophy { font-size: 80px; }
+#result h2 { font-size: 30px; margin: 0 0 10px; text-align: center; }
+#result p { font-size: 20px; margin: 4px; }
+#result .note { color: #d62828; font-size: 16px; }
+#resMenu { background: #fff; color: #0a2e5d; text-align: center; }
+
+/* tablet landscape (Galaxy Note 10.1): panel left, map right */
+@media (orientation: landscape) {
+  #game { flex-direction: row; }
+  .panel { width: 34%; max-width: 380px; padding: 8px 16px 0 8px; }
+  .card strong { font-size: 34px; }
+}
+@media (max-height: 640px) {
+  #menu { justify-content: flex-start; overflow-y: auto; }
+}
+@media (orientation: landscape) and (max-height: 500px) {
+  h1 { font-size: 36px; }
+  .card strong { font-size: 24px; }
+}

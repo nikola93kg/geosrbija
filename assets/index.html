@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>GeoSrbija</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="menu" class="screen">
+  <h1>Geo<span>Srbija</span></h1>
+  <p class="tag">Koliko dobro poznaješ Srbiju?</p>
+  <button id="play" class="primary">▶ Igraj</button>
+  <div id="rounds"></div>
+  <p class="best">🏆 Rekord: <b id="best">0</b></p>
+</div>
+
+<div id="game" class="screen" style="display:none">
+  <div class="panel">
+    <div class="top">
+      <button id="quit" aria-label="Nazad">‹</button>
+      <span id="roundName"></span>
+    </div>
+    <div class="timer"><div id="bar"></div></div>
+    <div class="card">
+      <small id="qNum"></small>
+      <small>Pronađi na mapi:</small>
+      <strong id="target"></strong>
+    </div>
+    <div class="stats"><span>⏱ <b id="clock"></b></span><span><b id="points">0</b> poena</span></div>
+    <div id="feedback" role="status" aria-live="polite"></div>
+  </div>
+  <div class="mapwrap"><svg id="map" preserveAspectRatio="xMidYMid meet" aria-label="Mapa Srbije"></svg></div>
+</div>
+
+<div id="result" class="screen" style="display:none">
+  <div class="trophy">🏆</div>
+  <h2 id="resTitle"></h2>
+  <p>Runda: <b id="resRound"></b></p>
+  <p>Ukupno: <b id="resTotal"></b> poena</p>
+  <p id="resNote" class="note"></p>
+  <button id="resNext" class="primary">Sledeća runda ›</button>
+  <button id="resMenu">Glavni meni</button>
+</div>
+
+<script src="map.js"></script>
+<script src="data.js"></script>
+<script src="game.js"></script>
+</body>
+</html>
