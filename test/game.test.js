@@ -49,7 +49,7 @@ test('every place lies inside Serbia (incl. Kosovo), every river and region has 
     else assert.ok(inside(p[2], p[1]), p[0] + ' is outside the map');
   }));
   assert.deepStrictEqual(Object.keys(GEO_MAP.regions), ['VOJ', 'BG', 'SUM', 'JUG', 'KOS']);
-  ['click', 'tap', 'tick', 'good', 'ok', 'bad', 'win', 'lose'].forEach((k) => {
+  ['click', 'tap', 'tick', 'good', 'ok', 'bad', 'wrong_answer', 'win', 'lose'].forEach((k) => {
     assert.ok(fs.existsSync(path.join(__dirname, '../assets/sfx', k + '.wav')), 'missing sfx ' + k);
   });
 });
