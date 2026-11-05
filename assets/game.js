@@ -116,9 +116,6 @@
   function drawMap() {
     drawLand(svg, 'm', true);
     marks = el('g', {}, svg);
-    var logo = document.getElementById('logoMap'), c = drawLand(logo, 'l', false);
-    el('path', { d: PIN, fill: '#d62828', stroke: '#fff', 'stroke-width': 1.5, transform: 'translate(' + c.cx + ',' + (c.cy + 30) + ') scale(5)' }, logo);
-    el('circle', { cx: c.cx, cy: c.cy + 30 - 55, r: 11, fill: '#fff' }, logo);
   }
 
   function toLatLon(evt) {
@@ -162,9 +159,15 @@
     ['menu', 'game', 'result'].forEach(function (s) { $(s).style.display = s === screen ? '' : 'none'; });
   }
 
+  function openSub(id) {
+    ['mainNav', 'subRounds', 'subRecords', 'subStats', 'subSettings'].forEach(function (s) {
+      $(s).style.display = s === (id || 'mainNav') ? '' : 'none';
+    });
+  }
+
   function renderMenu() {
-    var reached = +store.getItem('reached') || 0, list = $('rounds');
-    list.innerHTML = '';
+    var reached = +store.getItem('reached') || 0, list = $('rounds'), recs = $('roundRecords');
+    list.innerHTML = ''; recs.innerHTML = '';
     GEO_ROUNDS.forEach(function (r, i) {
       var b = document.createElement('button');
       b.className = 'round' + (i > reached ? ' locked' : '');
@@ -172,8 +175,20 @@
       b.innerHTML = '<b>' + (i + 1) + '</b> ' + r.name + (i > reached ? ' <span>🔒</span>' : ' <span>›</span>');
       b.onclick = function () { start(i); };
       list.appendChild(b);
+
+      var row = document.createElement('div');
+      row.className = 'info-row';
+      row.innerHTML = '<span>' + (i + 1) + '. ' + r.name + '</span><b>' + (+store.getItem('best_r' + i) || 0) + '</b>';
+      recs.appendChild(row);
     });
     $('best').textContent = store.getItem('best') || 0;
+    $('stGames').textContent = +store.getItem('st_games') || 0;
+    $('stTotalPts').textContent = +store.getItem('st_pts') || 0;
+    var bkm = store.getItem('st_best_km');
+    $('stBestKm').textContent = bkm !== null ? bkm + ' км' : '—';
+    $('stUnlocked').textContent = Math.min(GEO_ROUNDS.length, reached + 1) + ' / ' + GEO_ROUNDS.length;
+    syncSoundUI();
+    openSub(null);
     show('menu');
   }
 
@@ -234,6 +249,8 @@
     if (guess) {
       el('line', { x1: px(guess.lon), y1: py(guess.lat), x2: px(tLon), y2: py(tLat), 'class': 'link' }, marks);
       mark(guess.lat, guess.lon, 'guess');
+      var prevKm = store.getItem('st_best_km'), rkm = Math.round(km);
+      if (prevKm === null || rkm < +prevKm) store.setItem('st_best_km', rkm);
     }
     if (!isRiver) mark(tLat, tLon, 'pin');
     state.roundPts += pts; state.total += pts;
@@ -251,6 +268,9 @@
     if (state.q < state.qs.length) return ask();
     var passed = state.roundPts >= PASS, last = state.round === GEO_ROUNDS.length - 1;
     if (state.total > (+store.getItem('best') || 0)) store.setItem('best', state.total);
+    if (state.roundPts > (+store.getItem('best_r' + state.round) || 0)) store.setItem('best_r' + state.round, state.roundPts);
+    store.setItem('st_games', (+store.getItem('st_games') || 0) + 1);
+    store.setItem('st_pts', (+store.getItem('st_pts') || 0) + state.roundPts);
     if (passed && !last) store.setItem('reached', Math.max(+store.getItem('reached') || 0, state.round + 1));
     var ratio = state.roundPts / (state.qs.length * 1000);
     $('resTitle').textContent = ratio >= 0.8 ? 'Одлично!' : ratio >= 0.6 ? 'Врло добро!' : passed ? 'Браво!' : 'Пробај поново!';
@@ -270,19 +290,38 @@
     e.preventDefault();
     answer(toLatLon(e));
   }
+  function syncSoundUI() {
+    var m = +store.getItem('muted');
+    $('mute').textContent = m ? '🔇' : '🔊';
+    $('lblSound').textContent = m ? '🔇 Звучни ефекти: Искључени' : '🔊 Звучни ефекти: Укључени';
+  }
+  function toggleSound() {
+    var m = +store.getItem('muted') ? 0 : 1;
+    store.setItem('muted', m);
+    syncSoundUI();
+    if (!m) sfx('click');
+  }
+
   svg.addEventListener('touchstart', onTap);
   svg.addEventListener('mousedown', onTap);
+  $('btnPlay').onclick = function () { sfx('click'); openSub('subRounds'); };
+  $('btnRecords').onclick = function () { sfx('click'); openSub('subRecords'); };
+  $('btnStats').onclick = function () { sfx('click'); openSub('subStats'); };
+  $('btnSettings').onclick = function () { sfx('click'); openSub('subSettings'); };
+  Array.prototype.forEach.call(document.querySelectorAll('.sub-back'), function (b) {
+    b.onclick = function () { sfx('click'); openSub(null); };
+  });
   $('play').onclick = function () { start(0); };
   $('resNext').onclick = function () { sfx('click'); state.round++; startRound(); };
   $('resRetry').onclick = function () { sfx('click'); startRound(); };
   $('resMenu').onclick = function () { sfx('click'); renderMenu(); };
   $('quit').onclick = function () { sfx('click'); clearInterval(timer); clearTimeout(pending); state = null; renderMenu(); };
-  $('mute').textContent = +store.getItem('muted') ? '🔇' : '🔊';
-  $('mute').onclick = function () {
-    var m = +store.getItem('muted') ? 0 : 1;
-    store.setItem('muted', m);
-    $('mute').textContent = m ? '🔇' : '🔊';
-    if (!m) sfx('click');
+  $('mute').onclick = toggleSound;
+  $('btnToggleSound').onclick = toggleSound;
+  $('btnReset').onclick = function () {
+    sfx('bad');
+    store.clear();
+    renderMenu();
   };
 
   drawMap();

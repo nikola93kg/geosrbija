@@ -33,7 +33,9 @@ public class MainActivity extends Activity {
         // In a game, Back returns to the menu; on the menu it exits.
         web.evaluateJavascript("(function(){var g=document.getElementById('game');"
             + "if(g.style.display!=='none'){document.getElementById('quit').click();return 1}"
-            + "if(document.getElementById('result').style.display!=='none'){document.getElementById('resMenu').click();return 1}return 0})()",
+            + "if(document.getElementById('result').style.display!=='none'){document.getElementById('resMenu').click();return 1}"
+            + "var nav=document.getElementById('mainNav');if(nav&&nav.style.display==='none'){document.querySelector('.sub-back').click();return 1}"
+            + "return 0})()",
             value -> { if ("0".equals(value)) finish(); });
     }
 }

@@ -8,54 +8,88 @@
 </head>
 <body>
 <div id="menu" class="screen">
-  <svg class="scenery" viewBox="0 0 800 320" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
-    <!-- Clouds -->
-    <g fill="rgba(255,255,255,0.65)">
-      <path d="M70 70a28 28 0 0 1 52-10 22 22 0 0 1 38 14h-90z"/>
-      <path d="M620 55a32 32 0 0 1 60-12 24 24 0 0 1 42 16H620z"/>
-    </g>
-    <!-- Distant mountains -->
-    <path d="M0 220L110 140 210 190 330 115 450 185 570 125 690 180 800 135V320H0Z" fill="#6fa8dc" opacity="0.55"/>
-    <!-- Fortress silhouette on left hill (Golubac / Kalemegdan) -->
-    <g fill="#8d6e63" stroke="#5d4037" stroke-width="1.5">
-      <rect x="48" y="148" width="18" height="55"/>
-      <polygon points="45,148 57,126 69,148" fill="#5d4037"/>
-      <rect x="30" y="172" width="68" height="32" fill="#a1887f"/>
-      <rect x="26" y="164" width="14" height="40"/>
-      <rect x="88" y="160" width="16" height="44"/>
-      <path d="M26 164h14v-5H26zm26 8h8v-5h-8zm16 0h8v-5h-8zm20-12h16v-5H88z" fill="#5d4037"/>
-    </g>
-    <!-- Rolling green hills & river -->
-    <path d="M0 215C140 185 260 215 410 205S660 180 800 205V320H0Z" fill="#66bb6a"/>
-    <path d="M0 250C180 220 320 255 500 235S690 220 800 242V320H0Z" fill="#43a047"/>
-    <path d="M240 320C295 282 375 274 445 252 505 234 565 224 615 215 555 238 490 252 435 274 385 294 355 308 335 320Z" fill="#29b6f6"/>
-    <path d="M0 282C160 264 310 294 490 278S690 265 800 285V320H0Z" fill="#2e7d32"/>
-  </svg>
+  <img class="hero-logo" src="img/geoSrbija.png" alt="ГеоСрбија — Квиз о Србији">
 
-  <div class="logo">
-    <div class="emblem">
-      <svg class="mascot" viewBox="0 0 120 96" aria-hidden="true">
-        <!-- Green leaf + smiling golden mascot -->
-        <path d="M48 16C48 4 66 2 70 14 58 18 52 18 48 16Z" fill="#4caf50" stroke="#0d3b66" stroke-width="3"/>
-        <circle cx="48" cy="52" r="34" fill="#ffc107" stroke="#0d3b66" stroke-width="4"/>
-        <path d="M34 45c2-4 7-4 9 0M53 45c2-4 7-4 9 0" fill="none" stroke="#0d3b66" stroke-width="3.5" stroke-linecap="round"/>
-        <path d="M35 56c4 10 22 10 26 0Z" fill="#d62828" stroke="#0d3b66" stroke-width="3" stroke-linejoin="round"/>
-      </svg>
-      <svg id="logoMap" aria-hidden="true"></svg>
-    </div>
-    <h1><span class="geo">Гео</span><span class="srb">Србија</span></h1>
-    <div class="ribbon">— КВИЗ О СРБИЈИ —</div>
+  <!-- Главни мени са 4 дугмета као на слици -->
+  <div id="mainNav" class="menu-box">
+    <button id="btnPlay" class="menu-btn play-btn">
+      <svg class="ico" viewBox="0 0 24 24"><path d="M6 4l15 8-15 8z" fill="#0a2e5d"/></svg>
+      <span>Играј квиз</span>
+    </button>
+    <button id="btnRecords" class="menu-btn glass-btn">
+      <svg class="ico" viewBox="0 0 24 24" fill="#fff"><path d="M18 2H6v2H2v5c0 2.8 2.2 5 5 5h.3A6 6 0 0 0 11 16.9V19H7v2h10v-2h-4v-2.1A6 6 0 0 0 16.7 14h.3c2.8 0 5-2.2 5-5V4h-4V2zm-14 7V6h2v5.8C4.8 11.4 4 10.3 4 9zm16 0c0 1.3-.8 2.4-2 2.8V6h2v3z"/></svg>
+      <span>Рекорди</span>
+    </button>
+    <button id="btnStats" class="menu-btn glass-btn">
+      <svg class="ico" viewBox="0 0 24 24" fill="#fff"><rect x="3" y="13" width="4.5" height="8" rx="1"/><rect x="9.75" y="8" width="4.5" height="13" rx="1"/><rect x="16.5" y="3" width="4.5" height="18" rx="1"/></svg>
+      <span>Статистика</span>
+    </button>
+    <button id="btnSettings" class="menu-btn glass-btn">
+      <svg class="ico" viewBox="0 0 24 24" fill="#fff"><path d="M19.14 12.94c.04-.3.06-.61.06-.94s-.02-.64-.07-.94l2.03-1.58a.5.5 0 0 0 .12-.61l-1.92-3.32a.5.5 0 0 0-.59-.22l-2.39.96a7.03 7.03 0 0 0-1.62-.94l-.36-2.54A.49.49 0 0 0 14 2h-4a.49.49 0 0 0-.49.42l-.36 2.54c-.59.24-1.13.56-1.62.94l-2.39-.96a.5.5 0 0 0-.59.22L2.63 8.48a.5.5 0 0 0 .12.61l2.03 1.58c-.05.3-.07.62-.07.94s.02.64.07.94l-2.03 1.58a.5.5 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.25.42.49.42h4c.24 0 .44-.18.49-.42l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32a.5.5 0 0 0-.12-.61l-2.01-1.58zM12 15.6A3.6 3.6 0 1 1 12 8.4a3.6 3.6 0 0 1 0 7.2z"/></svg>
+      <span>Подешавања</span>
+    </button>
   </div>
 
-  <button id="play" class="btn green">▶&nbsp; Покрени квиз</button>
-  <div id="rounds"></div>
-  <p class="best">🏆 Рекорд: <b id="best">0</b></p>
+  <!-- Подмени: Избор рунде -->
+  <div id="subRounds" class="sub-panel" style="display:none">
+    <div class="sub-head">
+      <button class="sub-back" data-close="1">‹ Назад</button>
+      <h3>Одабери рунду</h3>
+    </div>
+    <button id="play" class="menu-btn play-btn compact">
+      <svg class="ico" viewBox="0 0 24 24"><path d="M6 4l15 8-15 8z" fill="#0a2e5d"/></svg>
+      <span>Крени од 1. рунде</span>
+    </button>
+    <div id="rounds"></div>
+  </div>
+
+  <!-- Подмени: Рекорди -->
+  <div id="subRecords" class="sub-panel" style="display:none">
+    <div class="sub-head">
+      <button class="sub-back" data-close="1">‹ Назад</button>
+      <h3>Рекорди</h3>
+    </div>
+    <div class="info-list">
+      <div class="info-row highlight"><span>🏆 Најбољи резултат</span><b id="best">0</b></div>
+      <div id="roundRecords"></div>
+    </div>
+  </div>
+
+  <!-- Подмени: Статистика -->
+  <div id="subStats" class="sub-panel" style="display:none">
+    <div class="sub-head">
+      <button class="sub-back" data-close="1">‹ Назад</button>
+      <h3>Статистика</h3>
+    </div>
+    <div class="info-list">
+      <div class="info-row"><span>Одиграно рунди</span><b id="stGames">0</b></div>
+      <div class="info-row"><span>Укупно освојено поена</span><b id="stTotalPts">0</b></div>
+      <div class="info-row"><span>Најмањи промашај</span><b id="stBestKm">—</b></div>
+      <div class="info-row"><span>Откључано рунди</span><b id="stUnlocked">1 / 6</b></div>
+    </div>
+  </div>
+
+  <!-- Подмени: Подешавања -->
+  <div id="subSettings" class="sub-panel" style="display:none">
+    <div class="sub-head">
+      <button class="sub-back" data-close="1">‹ Назад</button>
+      <h3>Подешавања</h3>
+    </div>
+    <div class="info-list">
+      <button id="btnToggleSound" class="menu-btn glass-btn compact">
+        <span id="lblSound">🔊 Звучни ефекти: Укључени</span>
+      </button>
+      <button id="btnReset" class="menu-btn glass-btn compact danger">
+        <span>🗑 Ресетуј рекорде и напредак</span>
+      </button>
+    </div>
+  </div>
 </div>
 
 <div id="game" class="screen" style="display:none">
   <div class="panel">
     <div class="top">
-      <button id="quit" aria-label="Назад">←</button>
+      <button id="quit" aria-label="Назад">‹</button>
       <span id="qNum"></span>
       <button id="mute" aria-label="Звук">🔊</button>
     </div>
@@ -74,44 +108,39 @@
 </div>
 
 <div id="result" class="screen" style="display:none">
-  <h3>Резултат</h3>
-  <svg class="trophy-art" viewBox="0 0 220 165" aria-hidden="true">
-    <!-- Confetti -->
-    <rect x="18" y="18" width="10" height="6" rx="2" fill="#ffc107" transform="rotate(-25 18 18)"/>
-    <rect x="190" y="24" width="10" height="6" rx="2" fill="#4caf50" transform="rotate(30 190 24)"/>
-    <rect x="32" y="95" width="9" height="5" rx="2" fill="#ef5350" transform="rotate(18 32 95)"/>
-    <rect x="182" y="88" width="9" height="5" rx="2" fill="#ffc107" transform="rotate(-20 182 88)"/>
-    <circle cx="48" cy="36" r="4" fill="#29b6f6"/>
-    <circle cx="172" cy="44" r="4" fill="#ef5350"/>
-    <!-- Laurel branches -->
-    <path d="M58 122C34 102 30 66 48 38M162 122C186 102 190 66 172 38" fill="none" stroke="#4caf50" stroke-width="5" stroke-linecap="round"/>
-    <g fill="#66bb6a" stroke="#1b5e20" stroke-width="1.5">
-      <ellipse cx="36" cy="88" rx="9" ry="5" transform="rotate(-35 36 88)"/>
-      <ellipse cx="35" cy="68" rx="9" ry="5" transform="rotate(-20 35 68)"/>
-      <ellipse cx="42" cy="48" rx="9" ry="5" transform="rotate(-5 42 48)"/>
-      <ellipse cx="184" cy="88" rx="9" ry="5" transform="rotate(35 184 88)"/>
-      <ellipse cx="185" cy="68" rx="9" ry="5" transform="rotate(20 185 68)"/>
-      <ellipse cx="178" cy="48" rx="9" ry="5" transform="rotate(5 178 48)"/>
-    </g>
-    <!-- Handles -->
-    <path d="M74 36H54c-2 22 8 36 24 38M146 36h20c2 22-8 36-24 38" fill="none" stroke="#ffb300" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
-    <!-- Cup body -->
-    <path d="M72 22h76v32c0 26-16 44-38 44S72 80 72 54Z" fill="#ffc107" stroke="#0d3b66" stroke-width="4"/>
-    <!-- Star -->
-    <polygon points="110,38 115,49 127,50 118,58 121,70 110,63 99,70 102,58 93,50 105,49" fill="#fff8e1" stroke="#f57f17" stroke-width="2"/>
-    <!-- Stem & base -->
-    <rect x="102" y="96" width="16" height="22" fill="#ffb300" stroke="#0d3b66" stroke-width="3.5"/>
-    <rect x="82" y="116" width="56" height="14" rx="5" fill="#ffc107" stroke="#0d3b66" stroke-width="3.5"/>
-    <!-- Gold ribbon with score -->
-    <path d="M46 126h128l-8 28H54Z" fill="#ffe082" stroke="#0d3b66" stroke-width="3.5" stroke-linejoin="round"/>
-    <text id="resRound" x="110" y="146" text-anchor="middle" fill="#0d3b66" font-size="18" font-weight="900">0 / 10000</text>
-  </svg>
-  <h2 id="resTitle"></h2>
-  <p id="resMsg"></p>
-  <p class="total-line">Укупно: <b id="resTotal"></b> поена</p>
-  <button id="resNext" class="btn green">▶&nbsp; Следећа рунда</button>
-  <button id="resRetry" class="btn green">▶&nbsp; Играј поново</button>
-  <button id="resMenu" class="btn white">🏠&nbsp; Главни мени</button>
+  <div class="result-card">
+    <h3>Резултат</h3>
+    <svg class="trophy-art" viewBox="0 0 220 165" aria-hidden="true">
+      <rect x="18" y="18" width="10" height="6" rx="2" fill="#ffc107" transform="rotate(-25 18 18)"/>
+      <rect x="190" y="24" width="10" height="6" rx="2" fill="#4caf50" transform="rotate(30 190 24)"/>
+      <rect x="32" y="95" width="9" height="5" rx="2" fill="#ef5350" transform="rotate(18 32 95)"/>
+      <rect x="182" y="88" width="9" height="5" rx="2" fill="#ffc107" transform="rotate(-20 182 88)"/>
+      <circle cx="48" cy="36" r="4" fill="#29b6f6"/>
+      <circle cx="172" cy="44" r="4" fill="#ef5350"/>
+      <path d="M58 122C34 102 30 66 48 38M162 122C186 102 190 66 172 38" fill="none" stroke="#ffc107" stroke-width="5" stroke-linecap="round"/>
+      <g fill="#ffd54f" stroke="#b27800" stroke-width="1.5">
+        <ellipse cx="36" cy="88" rx="9" ry="5" transform="rotate(-35 36 88)"/>
+        <ellipse cx="35" cy="68" rx="9" ry="5" transform="rotate(-20 35 68)"/>
+        <ellipse cx="42" cy="48" rx="9" ry="5" transform="rotate(-5 42 48)"/>
+        <ellipse cx="184" cy="88" rx="9" ry="5" transform="rotate(35 184 88)"/>
+        <ellipse cx="185" cy="68" rx="9" ry="5" transform="rotate(20 185 68)"/>
+        <ellipse cx="178" cy="48" rx="9" ry="5" transform="rotate(5 178 48)"/>
+      </g>
+      <path d="M74 36H54c-2 22 8 36 24 38M146 36h20c2 22-8 36-24 38" fill="none" stroke="#ffb300" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M72 22h76v32c0 26-16 44-38 44S72 80 72 54Z" fill="#ffc107" stroke="#0a2e5d" stroke-width="4"/>
+      <polygon points="110,38 115,49 127,50 118,58 121,70 110,63 99,70 102,58 93,50 105,49" fill="#fff8e1" stroke="#f57f17" stroke-width="2"/>
+      <rect x="102" y="96" width="16" height="22" fill="#ffb300" stroke="#0a2e5d" stroke-width="3.5"/>
+      <rect x="82" y="116" width="56" height="14" rx="5" fill="#ffc107" stroke="#0a2e5d" stroke-width="3.5"/>
+      <path d="M46 126h128l-8 28H54Z" fill="#d62828" stroke="#fff" stroke-width="2.5" stroke-linejoin="round"/>
+      <text id="resRound" x="110" y="146" text-anchor="middle" fill="#fff" font-size="18" font-weight="800">0 / 10000</text>
+    </svg>
+    <h2 id="resTitle"></h2>
+    <p id="resMsg"></p>
+    <p class="total-line">Укупно: <b id="resTotal"></b> поена</p>
+    <button id="resNext" class="menu-btn play-btn compact"><span>Следећа рунда ›</span></button>
+    <button id="resRetry" class="menu-btn play-btn compact"><span>▶ Играј поново</span></button>
+    <button id="resMenu" class="menu-btn glass-btn compact"><span>🏠 Главни мени</span></button>
+  </div>
 </div>
 
 <script src="map.js"></script>
