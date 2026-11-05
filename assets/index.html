@@ -30,61 +30,64 @@
     </button>
   </div>
 
-  <!-- Подмени: Избор нивоа и рунде -->
-  <div id="subRounds" class="sub-panel" style="display:none">
-    <div class="sub-head">
-      <button class="sub-back" data-close="1">‹ Назад</button>
-      <h3><img class="head-ico" src="img/ico_mapa.png" alt=""> Тежина и рунде</h3>
-    </div>
-    <div id="levels" class="level-bar"></div>
-    <p id="levelInfo" class="level-info"></p>
-    <button id="play" class="menu-btn play-btn compact">
-      <svg class="ico" viewBox="0 0 24 24"><path d="M6 4l15 8-15 8z" fill="#0a2e5d"/></svg>
-      <span>Крени од 1. рунде</span>
-    </button>
-    <div id="rounds"></div>
-  </div>
-
-  <!-- Подмени: Рекорди -->
-  <div id="subRecords" class="sub-panel" style="display:none">
-    <div class="sub-head">
-      <button class="sub-back" data-close="1">‹ Назад</button>
-      <h3><img class="head-ico" src="img/ico_rekordi.png" alt=""> Рекорди</h3>
-    </div>
-    <div class="info-list">
-      <div class="info-row highlight"><span>🏆 Најбољи укупни резултат</span><b id="best">0</b></div>
-      <div id="roundRecords"></div>
-    </div>
-  </div>
-
-  <!-- Подмени: Статистика -->
-  <div id="subStats" class="sub-panel" style="display:none">
-    <div class="sub-head">
-      <button class="sub-back" data-close="1">‹ Назад</button>
-      <h3><img class="head-ico" src="img/ico_statistika.png" alt=""> Статистика</h3>
-    </div>
-    <div class="info-list">
-      <div class="info-row"><span>Одиграно рунди</span><b id="stGames">0</b></div>
-      <div class="info-row"><span>Укупно освојено поена</span><b id="stTotalPts">0</b></div>
-      <div class="info-row"><span>Тачних погодака</span><b id="stHits">0</b></div>
-      <div class="info-row"><span>Најмањи промашај</span><b id="stBestKm">—</b></div>
-      <div class="info-row"><span>Откључано рунди</span><b id="stUnlocked">1 / 6</b></div>
-    </div>
-  </div>
-
-  <!-- Подмени: Подешавања -->
-  <div id="subSettings" class="sub-panel" style="display:none">
-    <div class="sub-head">
-      <button class="sub-back" data-close="1">‹ Назад</button>
-      <h3><img class="head-ico" src="img/ico_podesavanja.png" alt=""> Подешавања</h3>
-    </div>
-    <div class="info-list">
-      <button id="btnToggleSound" class="menu-btn glass-btn compact">
-        <span id="lblSound">🔊 Звучни ефекти: Укључени</span>
+  <!-- Искачући (popup) модал за избор нивоа/рунде, рекорде, статистику и подешавања (без скроловања) -->
+  <div id="menuModal" class="modal-backdrop" style="display:none">
+    <!-- Подмени: Избор нивоа и рунде -->
+    <div id="subRounds" class="sub-panel" style="display:none">
+      <div class="sub-head">
+        <h3><img class="head-ico" src="img/ico_mapa.png" alt=""> Тежина и рунде</h3>
+        <button class="sub-back" data-close="1">✕ Затвори</button>
+      </div>
+      <div id="levels" class="level-bar"></div>
+      <p id="levelInfo" class="level-info"></p>
+      <button id="play" class="menu-btn play-btn compact">
+        <svg class="ico" viewBox="0 0 24 24"><path d="M6 4l15 8-15 8z" fill="#0a2e5d"/></svg>
+        <span>Крени од 1. рунде</span>
       </button>
-      <button id="btnReset" class="menu-btn glass-btn compact danger">
-        <span>🗑 Ресетуј рекорде и напредак</span>
-      </button>
+      <div id="rounds"></div>
+    </div>
+
+    <!-- Подмени: Рекорди -->
+    <div id="subRecords" class="sub-panel" style="display:none">
+      <div class="sub-head">
+        <h3><img class="head-ico" src="img/ico_rekordi.png" alt=""> Рекорди</h3>
+        <button class="sub-back" data-close="1">✕ Затвори</button>
+      </div>
+      <div class="info-list">
+        <div class="info-row highlight"><span>🏆 Најбољи укупни резултат</span><b id="best">0</b></div>
+        <div id="roundRecords"></div>
+      </div>
+    </div>
+
+    <!-- Подмени: Статистика -->
+    <div id="subStats" class="sub-panel" style="display:none">
+      <div class="sub-head">
+        <h3><img class="head-ico" src="img/ico_statistika.png" alt=""> Статистика</h3>
+        <button class="sub-back" data-close="1">✕ Затвори</button>
+      </div>
+      <div class="info-list">
+        <div class="info-row"><span>Одиграно рунди</span><b id="stGames">0</b></div>
+        <div class="info-row"><span>Укупно освојено поена</span><b id="stTotalPts">0</b></div>
+        <div class="info-row"><span>Тачних погодака</span><b id="stHits">0</b></div>
+        <div class="info-row"><span>Најмањи промашај</span><b id="stBestKm">—</b></div>
+        <div class="info-row"><span>Откључано рунди</span><b id="stUnlocked">1 / 6</b></div>
+      </div>
+    </div>
+
+    <!-- Подмени: Подешавања -->
+    <div id="subSettings" class="sub-panel" style="display:none">
+      <div class="sub-head">
+        <h3><img class="head-ico" src="img/ico_podesavanja.png" alt=""> Подешавања</h3>
+        <button class="sub-back" data-close="1">✕ Затвори</button>
+      </div>
+      <div class="info-list">
+        <button id="btnToggleSound" class="menu-btn glass-btn compact">
+          <span id="lblSound">🔊 Звучни ефекти: Укључени</span>
+        </button>
+        <button id="btnReset" class="menu-btn glass-btn compact danger">
+          <span>🗑 Ресетуј рекорде и напредак</span>
+        </button>
+      </div>
     </div>
   </div>
 </div>

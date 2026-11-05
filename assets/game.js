@@ -170,8 +170,9 @@
   var ROUND_ILLS = ['ill_tvrdjava.png', 'ill_mapa_srbije.png', 'ill_crkva.png', 'ill_planinski_vrhovi.png', 'ill_cetinar.png', 'ill_reka_dolina.png'];
 
   function openSub(id) {
-    ['mainNav', 'subRounds', 'subRecords', 'subStats', 'subSettings'].forEach(function (s) {
-      $(s).style.display = s === (id || 'mainNav') ? '' : 'none';
+    $('menuModal').style.display = id ? '' : 'none';
+    ['subRounds', 'subRecords', 'subStats', 'subSettings'].forEach(function (s) {
+      $(s).style.display = s === id ? '' : 'none';
     });
   }
 
@@ -404,6 +405,9 @@
   Array.prototype.forEach.call(document.querySelectorAll('.sub-back'), function (b) {
     b.onclick = function () { sfx('click'); openSub(null); };
   });
+  $('menuModal').onclick = function (e) {
+    if (e.target.id === 'menuModal') { sfx('click'); openSub(null); }
+  };
   $('play').onclick = function () { start(0); };
   $('btnPause').onclick = pauseGame;
   $('btnResume').onclick = resumeGame;
