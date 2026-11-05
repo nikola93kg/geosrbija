@@ -10,22 +10,22 @@
 <div id="menu" class="screen">
   <img class="hero-logo" src="img/geoSrbija.png" alt="ГеоСрбија — Квиз о Србији">
 
-  <!-- Главни мени са 4 дугмета као на слици -->
+  <!-- Главни мени са 4 дугмета -->
   <div id="mainNav" class="menu-box">
     <button id="btnPlay" class="menu-btn play-btn">
       <svg class="ico" viewBox="0 0 24 24"><path d="M6 4l15 8-15 8z" fill="#0a2e5d"/></svg>
       <span>Играј квиз</span>
     </button>
     <button id="btnRecords" class="menu-btn glass-btn">
-      <svg class="ico" viewBox="0 0 24 24" fill="#fff"><path d="M18 2H6v2H2v5c0 2.8 2.2 5 5 5h.3A6 6 0 0 0 11 16.9V19H7v2h10v-2h-4v-2.1A6 6 0 0 0 16.7 14h.3c2.8 0 5-2.2 5-5V4h-4V2zm-14 7V6h2v5.8C4.8 11.4 4 10.3 4 9zm16 0c0 1.3-.8 2.4-2 2.8V6h2v3z"/></svg>
+      <img class="ico" src="img/ico_rekordi.png" alt="">
       <span>Рекорди</span>
     </button>
     <button id="btnStats" class="menu-btn glass-btn">
-      <svg class="ico" viewBox="0 0 24 24" fill="#fff"><rect x="3" y="13" width="4.5" height="8" rx="1"/><rect x="9.75" y="8" width="4.5" height="13" rx="1"/><rect x="16.5" y="3" width="4.5" height="18" rx="1"/></svg>
+      <img class="ico" src="img/ico_statistika.png" alt="">
       <span>Статистика</span>
     </button>
     <button id="btnSettings" class="menu-btn glass-btn">
-      <svg class="ico" viewBox="0 0 24 24" fill="#fff"><path d="M19.14 12.94c.04-.3.06-.61.06-.94s-.02-.64-.07-.94l2.03-1.58a.5.5 0 0 0 .12-.61l-1.92-3.32a.5.5 0 0 0-.59-.22l-2.39.96a7.03 7.03 0 0 0-1.62-.94l-.36-2.54A.49.49 0 0 0 14 2h-4a.49.49 0 0 0-.49.42l-.36 2.54c-.59.24-1.13.56-1.62.94l-2.39-.96a.5.5 0 0 0-.59.22L2.63 8.48a.5.5 0 0 0 .12.61l2.03 1.58c-.05.3-.07.62-.07.94s.02.64.07.94l-2.03 1.58a.5.5 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.25.42.49.42h4c.24 0 .44-.18.49-.42l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32a.5.5 0 0 0-.12-.61l-2.01-1.58zM12 15.6A3.6 3.6 0 1 1 12 8.4a3.6 3.6 0 0 1 0 7.2z"/></svg>
+      <img class="ico" src="img/ico_podesavanja.png" alt="">
       <span>Подешавања</span>
     </button>
   </div>
@@ -34,7 +34,7 @@
   <div id="subRounds" class="sub-panel" style="display:none">
     <div class="sub-head">
       <button class="sub-back" data-close="1">‹ Назад</button>
-      <h3>Одабери рунду</h3>
+      <h3><img class="head-ico" src="img/ico_mapa.png" alt=""> Одабери рунду</h3>
     </div>
     <button id="play" class="menu-btn play-btn compact">
       <svg class="ico" viewBox="0 0 24 24"><path d="M6 4l15 8-15 8z" fill="#0a2e5d"/></svg>
@@ -47,10 +47,10 @@
   <div id="subRecords" class="sub-panel" style="display:none">
     <div class="sub-head">
       <button class="sub-back" data-close="1">‹ Назад</button>
-      <h3>Рекорди</h3>
+      <h3><img class="head-ico" src="img/ico_rekordi.png" alt=""> Рекорди</h3>
     </div>
     <div class="info-list">
-      <div class="info-row highlight"><span>🏆 Најбољи резултат</span><b id="best">0</b></div>
+      <div class="info-row highlight"><span>🏆 Најбољи укупни резултат</span><b id="best">0</b></div>
       <div id="roundRecords"></div>
     </div>
   </div>
@@ -59,11 +59,12 @@
   <div id="subStats" class="sub-panel" style="display:none">
     <div class="sub-head">
       <button class="sub-back" data-close="1">‹ Назад</button>
-      <h3>Статистика</h3>
+      <h3><img class="head-ico" src="img/ico_statistika.png" alt=""> Статистика</h3>
     </div>
     <div class="info-list">
       <div class="info-row"><span>Одиграно рунди</span><b id="stGames">0</b></div>
       <div class="info-row"><span>Укупно освојено поена</span><b id="stTotalPts">0</b></div>
+      <div class="info-row"><span>Тачних погодака</span><b id="stHits">0</b></div>
       <div class="info-row"><span>Најмањи промашај</span><b id="stBestKm">—</b></div>
       <div class="info-row"><span>Откључано рунди</span><b id="stUnlocked">1 / 6</b></div>
     </div>
@@ -73,7 +74,7 @@
   <div id="subSettings" class="sub-panel" style="display:none">
     <div class="sub-head">
       <button class="sub-back" data-close="1">‹ Назад</button>
-      <h3>Подешавања</h3>
+      <h3><img class="head-ico" src="img/ico_podesavanja.png" alt=""> Подешавања</h3>
     </div>
     <div class="info-list">
       <button id="btnToggleSound" class="menu-btn glass-btn compact">
@@ -95,11 +96,12 @@
     </div>
     <div class="timer"><div id="bar"></div></div>
     <div class="card">
+      <img id="roundIll" class="card-ill" src="img/ill_tvrdjava.png" alt="">
       <small id="roundName"></small>
       <span class="ask">Пронађи на мапи:</span>
       <strong id="target"></strong>
     </div>
-    <div class="stats"><span>⏱ <b id="clock">00:15</b></span><span class="pts">🏆 <b id="points">0</b> поена</span></div>
+    <div class="stats"><span>⏱ <b id="clock">00:15</b></span><span class="pts"><img class="stat-ico" src="img/ico_rekordi.png" alt=""> <b id="points">0</b> поена</span></div>
   </div>
   <div class="mapwrap">
     <svg id="map" preserveAspectRatio="xMidYMid meet" aria-label="Мапа Србије"></svg>
@@ -107,39 +109,71 @@
   </div>
 </div>
 
+<!-- Екран резултата као са слике (Резултат / пехар са црвеном траком / Одлично! / Подели резултат / Погледај статистику / Главни мени) -->
 <div id="result" class="screen" style="display:none">
-  <div class="result-card">
-    <h3>Резултат</h3>
-    <svg class="trophy-art" viewBox="0 0 220 165" aria-hidden="true">
-      <rect x="18" y="18" width="10" height="6" rx="2" fill="#ffc107" transform="rotate(-25 18 18)"/>
-      <rect x="190" y="24" width="10" height="6" rx="2" fill="#4caf50" transform="rotate(30 190 24)"/>
-      <rect x="32" y="95" width="9" height="5" rx="2" fill="#ef5350" transform="rotate(18 32 95)"/>
-      <rect x="182" y="88" width="9" height="5" rx="2" fill="#ffc107" transform="rotate(-20 182 88)"/>
-      <circle cx="48" cy="36" r="4" fill="#29b6f6"/>
-      <circle cx="172" cy="44" r="4" fill="#ef5350"/>
-      <path d="M58 122C34 102 30 66 48 38M162 122C186 102 190 66 172 38" fill="none" stroke="#ffc107" stroke-width="5" stroke-linecap="round"/>
-      <g fill="#ffd54f" stroke="#b27800" stroke-width="1.5">
-        <ellipse cx="36" cy="88" rx="9" ry="5" transform="rotate(-35 36 88)"/>
-        <ellipse cx="35" cy="68" rx="9" ry="5" transform="rotate(-20 35 68)"/>
-        <ellipse cx="42" cy="48" rx="9" ry="5" transform="rotate(-5 42 48)"/>
-        <ellipse cx="184" cy="88" rx="9" ry="5" transform="rotate(35 184 88)"/>
-        <ellipse cx="185" cy="68" rx="9" ry="5" transform="rotate(20 185 68)"/>
-        <ellipse cx="178" cy="48" rx="9" ry="5" transform="rotate(5 178 48)"/>
+  <div class="res-wrap">
+    <h3 class="res-top-title">Резултат</h3>
+
+    <svg class="trophy-art" viewBox="0 0 260 185" aria-hidden="true">
+      <!-- Златни ловоров венац лево и десно -->
+      <path d="M72 136C40 114 34 72 56 40M188 136C220 114 226 72 204 40" fill="none" stroke="#d49a00" stroke-width="4.5" stroke-linecap="round"/>
+      <g fill="#ffc107" stroke="#b27800" stroke-width="1.3">
+        <ellipse cx="44" cy="104" rx="10" ry="5" transform="rotate(-38 44 104)"/>
+        <ellipse cx="40" cy="82" rx="10" ry="5" transform="rotate(-24 40 82)"/>
+        <ellipse cx="44" cy="60" rx="10" ry="5" transform="rotate(-10 44 60)"/>
+        <ellipse cx="55" cy="42" rx="9" ry="4.5" transform="rotate(8 55 42)"/>
+        <ellipse cx="60" cy="96" rx="9" ry="4.5" transform="rotate(25 60 96)"/>
+        <ellipse cx="56" cy="74" rx="9" ry="4.5" transform="rotate(35 56 74)"/>
+        <ellipse cx="216" cy="104" rx="10" ry="5" transform="rotate(38 216 104)"/>
+        <ellipse cx="220" cy="82" rx="10" ry="5" transform="rotate(24 220 82)"/>
+        <ellipse cx="216" cy="60" rx="10" ry="5" transform="rotate(10 216 60)"/>
+        <ellipse cx="205" cy="42" rx="9" ry="4.5" transform="rotate(-8 205 42)"/>
+        <ellipse cx="200" cy="96" rx="9" ry="4.5" transform="rotate(-25 200 96)"/>
+        <ellipse cx="204" cy="74" rx="9" ry="4.5" transform="rotate(-35 204 74)"/>
       </g>
-      <path d="M74 36H54c-2 22 8 36 24 38M146 36h20c2 22-8 36-24 38" fill="none" stroke="#ffb300" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
-      <path d="M72 22h76v32c0 26-16 44-38 44S72 80 72 54Z" fill="#ffc107" stroke="#0a2e5d" stroke-width="4"/>
-      <polygon points="110,38 115,49 127,50 118,58 121,70 110,63 99,70 102,58 93,50 105,49" fill="#fff8e1" stroke="#f57f17" stroke-width="2"/>
-      <rect x="102" y="96" width="16" height="22" fill="#ffb300" stroke="#0a2e5d" stroke-width="3.5"/>
-      <rect x="82" y="116" width="56" height="14" rx="5" fill="#ffc107" stroke="#0a2e5d" stroke-width="3.5"/>
-      <path d="M46 126h128l-8 28H54Z" fill="#d62828" stroke="#fff" stroke-width="2.5" stroke-linejoin="round"/>
-      <text id="resRound" x="110" y="146" text-anchor="middle" fill="#fff" font-size="18" font-weight="800">0 / 10000</text>
+      <!-- Дршке пехара -->
+      <path d="M90 36H68c-3 24 8 40 26 42M170 36h22c3 24-8 40-26 42" fill="none" stroke="#ffb300" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <!-- Чаша пехара -->
+      <path d="M86 20h88v36c0 28-18 48-44 48S86 84 86 56Z" fill="#ffc107" stroke="#b27800" stroke-width="3.5"/>
+      <ellipse cx="130" cy="20" rx="44" ry="6" fill="#ffe082" stroke="#b27800" stroke-width="3"/>
+      <!-- Звезда у средини -->
+      <polygon points="130,38 136,51 150,53 140,62 143,76 130,68 117,76 120,62 110,53 124,51" fill="#ffd54f" stroke="#d48800" stroke-width="2"/>
+      <!-- Постоље -->
+      <rect x="120" y="102" width="20" height="24" fill="#ffb300" stroke="#b27800" stroke-width="3"/>
+      <rect x="96" y="122" width="68" height="14" rx="6" fill="#ffc107" stroke="#b27800" stroke-width="3"/>
+      <!-- Црвена свечана трака са резултатом (нпр. 8 / 10) -->
+      <polygon points="34,142 66,134 62,168 34,164 44,152" fill="#9e1919"/>
+      <polygon points="226,142 194,134 198,168 226,164 216,152" fill="#9e1919"/>
+      <path d="M54 128Q130 118 206 128L198 164Q130 154 62 164Z" fill="#d62828" stroke="#9e1919" stroke-width="2.5" stroke-linejoin="round"/>
+      <text id="resRibbon" x="130" y="151" text-anchor="middle" fill="#fff" font-size="25" font-weight="800">8 / 10</text>
     </svg>
-    <h2 id="resTitle"></h2>
-    <p id="resMsg"></p>
-    <p class="total-line">Укупно: <b id="resTotal"></b> поена</p>
-    <button id="resNext" class="menu-btn play-btn compact"><span>Следећа рунда ›</span></button>
-    <button id="resRetry" class="menu-btn play-btn compact"><span>▶ Играј поново</span></button>
-    <button id="resMenu" class="menu-btn glass-btn compact"><span>🏠 Главни мени</span></button>
+
+    <h2 id="resTitle">Одлично!</h2>
+    <p id="resMsg">Веома добро познајеш географију Србије!</p>
+    <p class="res-pts-line">Рунда: <b id="resRound">0</b> · Укупно: <b id="resTotal">0</b> поена</p>
+
+    <div class="res-buttons">
+      <button id="resNext" class="res-btn res-primary">
+        <svg class="res-ico" viewBox="0 0 24 24"><path d="M6 4l15 8-15 8z" fill="#0a2e5d"/></svg>
+        <span>Следећа рунда</span>
+      </button>
+      <button id="resRetry" class="res-btn res-primary" style="display:none">
+        <svg class="res-ico" viewBox="0 0 24 24"><path d="M6 4l15 8-15 8z" fill="#0a2e5d"/></svg>
+        <span>Играј поново</span>
+      </button>
+      <button id="resShare" class="res-btn">
+        <svg class="res-ico" viewBox="0 0 24 24" fill="#0a2e5d"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 10.7l6.8-4M8.6 13.3l6.8 4" stroke="#0a2e5d" stroke-width="2.4"/></svg>
+        <span id="lblShare">Подели резултат</span>
+      </button>
+      <button id="resStats" class="res-btn">
+        <svg class="res-ico" viewBox="0 0 24 24" fill="#0a2e5d"><rect x="3" y="13" width="4.5" height="8" rx="1"/><rect x="9.75" y="8" width="4.5" height="13" rx="1"/><rect x="16.5" y="3" width="4.5" height="18" rx="1"/></svg>
+        <span>Погледај статистику</span>
+      </button>
+      <button id="resMenu" class="res-btn">
+        <svg class="res-ico" viewBox="0 0 24 24" fill="#0a2e5d"><path d="M12 3l9 8h-3v9h-5v-6h-2v6H6v-9H3z"/></svg>
+        <span>Главни мени</span>
+      </button>
+    </div>
   </div>
 </div>
 

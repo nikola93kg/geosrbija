@@ -159,20 +159,22 @@
     ['menu', 'game', 'result'].forEach(function (s) { $(s).style.display = s === screen ? '' : 'none'; });
   }
 
+  var ROUND_ILLS = ['ill_tvrdjava.png', 'ill_mapa_srbije.png', 'ill_crkva.png', 'ill_planinski_vrhovi.png', 'ill_cetinar.png', 'ill_reka_dolina.png'];
+
   function openSub(id) {
     ['mainNav', 'subRounds', 'subRecords', 'subStats', 'subSettings'].forEach(function (s) {
       $(s).style.display = s === (id || 'mainNav') ? '' : 'none';
     });
   }
 
-  function renderMenu() {
+  function renderMenu(sub) {
     var reached = +store.getItem('reached') || 0, list = $('rounds'), recs = $('roundRecords');
     list.innerHTML = ''; recs.innerHTML = '';
     GEO_ROUNDS.forEach(function (r, i) {
       var b = document.createElement('button');
       b.className = 'round' + (i > reached ? ' locked' : '');
       b.disabled = i > reached;
-      b.innerHTML = '<b>' + (i + 1) + '</b> ' + r.name + (i > reached ? ' <span>🔒</span>' : ' <span>›</span>');
+      b.innerHTML = '<img class="r-ill" src="img/' + ROUND_ILLS[i] + '" alt=""><b>' + (i + 1) + '</b> ' + r.name + (i > reached ? ' <span>🔒</span>' : ' <span>›</span>');
       b.onclick = function () { start(i); };
       list.appendChild(b);
 
@@ -184,11 +186,12 @@
     $('best').textContent = store.getItem('best') || 0;
     $('stGames').textContent = +store.getItem('st_games') || 0;
     $('stTotalPts').textContent = +store.getItem('st_pts') || 0;
+    $('stHits').textContent = +store.getItem('st_hits') || 0;
     var bkm = store.getItem('st_best_km');
     $('stBestKm').textContent = bkm !== null ? bkm + ' км' : '—';
     $('stUnlocked').textContent = Math.min(GEO_ROUNDS.length, reached + 1) + ' / ' + GEO_ROUNDS.length;
     syncSoundUI();
-    openSub(null);
+    openSub(typeof sub === 'string' ? sub : null);
     show('menu');
   }
 
@@ -201,8 +204,9 @@
   function startRound() {
     var r = GEO_ROUNDS[state.round];
     state.qs = shuffle(r.places).slice(0, QUESTIONS_PER_ROUND);
-    state.q = 0; state.roundPts = 0;
+    state.q = 0; state.roundPts = 0; state.hits = 0;
     store.setItem('reached', Math.max(+store.getItem('reached') || 0, state.round));
+    $('roundIll').src = 'img/' + ROUND_ILLS[state.round];
     $('roundName').textContent = 'Рунда ' + (state.round + 1) + ' · ' + r.name;
     show('game');
     ask();
@@ -253,6 +257,7 @@
       if (prevKm === null || rkm < +prevKm) store.setItem('st_best_km', rkm);
     }
     if (!isRiver) mark(tLat, tLon, 'pin');
+    if (pts > 0) state.hits++;
     state.roundPts += pts; state.total += pts;
     $('points').textContent = state.total;
     var fb = $('feedback'), kind = pts >= 700 ? 'good' : pts > 0 ? 'ok' : 'bad';
@@ -271,14 +276,21 @@
     if (state.roundPts > (+store.getItem('best_r' + state.round) || 0)) store.setItem('best_r' + state.round, state.roundPts);
     store.setItem('st_games', (+store.getItem('st_games') || 0) + 1);
     store.setItem('st_pts', (+store.getItem('st_pts') || 0) + state.roundPts);
+    store.setItem('st_hits', (+store.getItem('st_hits') || 0) + state.hits);
     if (passed && !last) store.setItem('reached', Math.max(+store.getItem('reached') || 0, state.round + 1));
+
     var ratio = state.roundPts / (state.qs.length * 1000);
-    $('resTitle').textContent = ratio >= 0.8 ? 'Одлично!' : ratio >= 0.6 ? 'Врло добро!' : passed ? 'Браво!' : 'Пробај поново!';
-    $('resMsg').textContent = !passed ? 'За следећу рунду треба бар ' + PASS + ' поена.' :
-      last ? 'Свака част! Одлично познајеш географију Србије!' :
-      'Прешао си рунду „' + GEO_ROUNDS[state.round].name + '”. Следи: ' + GEO_ROUNDS[state.round + 1].name + '.';
+    var great = state.hits >= 8 || ratio >= 0.75, good = state.hits >= 6 || ratio >= 0.55;
+    $('resTitle').textContent = great ? 'Одлично!' : good ? 'Врло добро!' : passed ? 'Добро!' : 'Може то боље!';
+    $('resMsg').textContent = !passed ? 'За прелазак у следећу рунду потребно је бар ' + PASS + ' поена. Покушај поново!' :
+      last ? 'Веома добро познајеш географију Србије! Завршио си све рунде!' :
+      great ? 'Веома добро познајеш географију Србије!' :
+      good ? 'Добро познајеш географију Србије, само тако настави!' :
+      'Солидно знање географије Србије! Откључана је следећа рунда.';
+    $('resRibbon').textContent = state.hits + ' / ' + state.qs.length;
     $('resRound').textContent = state.roundPts + ' / ' + (state.qs.length * 1000);
     $('resTotal').textContent = state.total;
+    $('lblShare').textContent = 'Подели резултат';
     $('resNext').style.display = passed && !last ? '' : 'none';
     $('resRetry').style.display = !passed || last ? '' : 'none';
     sfx(passed ? 'win' : 'lose');
@@ -314,6 +326,17 @@
   $('play').onclick = function () { start(0); };
   $('resNext').onclick = function () { sfx('click'); state.round++; startRound(); };
   $('resRetry').onclick = function () { sfx('click'); startRound(); };
+  $('resShare').onclick = function () {
+    sfx('click');
+    var txt = 'ГеоСрбија 🇷🇸 — ' + GEO_ROUNDS[state.round].name + ': ' + state.hits + '/' + state.qs.length + ' (' + state.roundPts + ' поена, укупно ' + state.total + ')!';
+    if (navigator.share) {
+      navigator.share({ title: 'ГеоСрбија', text: txt })['catch'](function () {});
+    } else if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(txt)['catch'](function () {});
+    }
+    $('lblShare').textContent = '✓ Резултат копиран!';
+  };
+  $('resStats').onclick = function () { sfx('click'); renderMenu('subStats'); };
   $('resMenu').onclick = function () { sfx('click'); renderMenu(); };
   $('quit').onclick = function () { sfx('click'); clearInterval(timer); clearTimeout(pending); state = null; renderMenu(); };
   $('mute').onclick = toggleSound;

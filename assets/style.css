@@ -16,56 +16,54 @@ body {
   -webkit-user-select: none; user-select: none;
 }
 button { font: inherit; cursor: pointer; border: 0; }
-.screen { position: relative; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 18px 16px 24px; }
+.screen { position: relative; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 16px 16px 22px; }
 
 /* ---------- menu & scenic backgrounds ---------- */
-#menu, #result {
+#menu {
   background: #0a2e5d url(img/bg-portrait.jpg) center / cover no-repeat;
   overflow-y: auto;
 }
 @media (orientation: landscape) {
-  #menu, #result {
-    background-image: url(img/bg-landscape.jpg);
-  }
+  #menu { background-image: url(img/bg-landscape.jpg); }
 }
 
 .hero-logo {
-  width: min(88vw, 390px);
-  max-height: 36vh;
+  width: min(86vw, 350px);
+  max-height: 31vh;
   object-fit: contain;
-  margin-top: 4px;
+  margin-top: 2px;
   filter: drop-shadow(0 8px 18px rgba(5, 25, 55, 0.45));
 }
 
 .menu-box {
   width: 100%;
-  max-width: 360px;
+  max-width: 345px;
   display: flex;
   flex-direction: column;
-  gap: 11px;
-  margin-bottom: 6px;
+  gap: 10px;
+  margin-bottom: 4px;
 }
 
-/* Buttons matching the uploaded screenshot (Igraj kviz / Rekordi / Statistika / Podesavanja) */
 .menu-btn {
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
   width: 100%;
-  max-width: 360px;
-  padding: 15px 24px;
+  max-width: 345px;
+  padding: 14px 22px;
   border-radius: 34px;
-  font-size: 21px;
+  font-size: 20px;
   font-weight: 800;
   letter-spacing: 0.2px;
   transition: transform 0.08s;
 }
 .menu-btn .ico {
   position: absolute;
-  left: 24px;
-  width: 26px;
-  height: 26px;
+  left: 22px;
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
 }
 .menu-btn:active { transform: translateY(2px); }
 
@@ -85,9 +83,10 @@ button { font: inherit; cursor: pointer; border: 0; }
 }
 
 .menu-btn.compact {
+  max-width: 100%;
   padding: 12px 20px;
   font-size: 18px;
-  margin: 5px auto;
+  margin: 4px auto;
 }
 .menu-btn.danger {
   background: linear-gradient(180deg, rgba(214, 40, 40, 0.9) 0%, rgba(155, 22, 22, 0.94) 100%);
@@ -98,8 +97,8 @@ button { font: inherit; cursor: pointer; border: 0; }
 .sub-panel {
   width: 100%;
   max-width: 420px;
-  background: rgba(8, 36, 72, 0.86);
-  border: 1.5px solid rgba(135, 205, 255, 0.45);
+  background: rgba(8, 36, 72, 0.88);
+  border: 1.5px solid rgba(135, 205, 255, 0.48);
   border-radius: 26px;
   padding: 14px 16px 16px;
   box-shadow: 0 12px 30px rgba(0, 15, 35, 0.55);
@@ -113,10 +112,14 @@ button { font: inherit; cursor: pointer; border: 0; }
 }
 .sub-head h3 {
   margin: 0;
-  font-size: 21px;
+  font-size: 20px;
   font-weight: 800;
   color: #ffc107;
+  display: flex;
+  align-items: center;
+  gap: 7px;
 }
+.head-ico { width: 24px; height: 24px; object-fit: contain; }
 .sub-back {
   background: rgba(255, 255, 255, 0.16);
   color: #fff;
@@ -137,23 +140,29 @@ button { font: inherit; cursor: pointer; border: 0; }
   color: #fff;
   border: 1.5px solid rgba(135, 205, 255, 0.45);
   border-radius: 18px;
-  padding: 10px 12px;
-  font-size: 15px;
+  padding: 9px 11px;
+  font-size: 14px;
   font-weight: 700;
   text-align: left;
   display: flex;
   align-items: center;
   gap: 8px;
 }
+#rounds button .r-ill {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+  flex: 0 0 34px;
+}
 #rounds button b {
-  flex: 0 0 24px;
-  height: 24px;
-  line-height: 24px;
+  flex: 0 0 22px;
+  height: 22px;
+  line-height: 22px;
   text-align: center;
-  border-radius: 12px;
+  border-radius: 11px;
   background: #ffc107;
   color: #0a2e5d;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 800;
 }
 #rounds button.locked {
@@ -162,6 +171,7 @@ button { font: inherit; cursor: pointer; border: 0; }
   border-color: rgba(255, 255, 255, 0.15);
   cursor: default;
 }
+#rounds button.locked .r-ill { opacity: 0.45; }
 #rounds button.locked b {
   background: rgba(255, 255, 255, 0.2);
   color: rgba(255, 255, 255, 0.6);
@@ -203,14 +213,20 @@ button { font: inherit; cursor: pointer; border: 0; }
 #bar { height: 100%; background: #ffc107; width: 100%; border-radius: 6px; }
 #bar.low { background: #ef5350; }
 .card {
+  position: relative;
   background: #fff; color: #0a2e5d; border-radius: 20px; padding: 12px 14px 14px;
   text-align: center; box-shadow: 0 8px 22px rgba(5, 22, 48, 0.35);
 }
+.card-ill {
+  width: 46px; height: 46px; object-fit: contain;
+  margin: -4px auto 2px; display: block;
+}
 .card small { display: block; font-size: 12px; font-weight: 800; letter-spacing: 0.8px; text-transform: uppercase; color: #1e88e5; }
 .card .ask { display: block; font-size: 16px; font-weight: 600; color: #3b5978; margin-top: 2px; }
-.card strong { display: block; font-size: 32px; font-weight: 800; line-height: 1.15; margin-top: 2px; }
+.card strong { display: block; font-size: 30px; font-weight: 800; line-height: 1.15; margin-top: 2px; }
 .stats { display: flex; justify-content: space-between; align-items: center; font-size: 19px; font-weight: 800; margin: 10px 4px 0; }
-.pts { color: #ffc107; }
+.pts { color: #ffc107; display: flex; align-items: center; gap: 5px; }
+.stat-ico { width: 22px; height: 22px; object-fit: contain; }
 .mapwrap { flex: 1 1 auto; position: relative; min-height: 0; margin-top: 6px; }
 #map { position: absolute; top: 0; left: 0; width: 100%; height: 100%; touch-action: none; overflow: visible; }
 #feedback {
@@ -229,32 +245,159 @@ button { font: inherit; cursor: pointer; border: 0; }
 .link { stroke: #fff8e1; stroke-width: 1.6; stroke-dasharray: 4 3; }
 .river-hit { fill: none; stroke: #29b6f6; stroke-width: 4.2; stroke-linecap: round; stroke-linejoin: round; }
 
-/* ---------- result ---------- */
-#result { justify-content: center; }
-.result-card {
-  width: 100%; max-width: 400px;
-  background: rgba(8, 36, 72, 0.88);
-  border: 1.5px solid rgba(135, 205, 255, 0.45);
-  border-radius: 28px;
-  padding: 18px 20px;
-  text-align: center;
-  box-shadow: 0 14px 34px rgba(0, 15, 35, 0.55);
+/* ---------- result screen (matching uploaded Rezultat screenshot) ---------- */
+#result {
+  align-items: center;
+  justify-content: center;
+  padding: 16px 20px;
+  background:
+    linear-gradient(180deg, #0d47a1 0%, rgba(30, 136, 229, 0.92) 45%, rgba(162, 212, 252, 0.55) 75%, rgba(205, 231, 255, 0.1) 100%),
+    url('img/bg-planine.jpg') center bottom / cover no-repeat;
+  color: #0a2e5d;
+  overflow-y: auto;
 }
-#result h3 { margin: 0; font-size: 24px; font-weight: 800; color: #fff; }
-.trophy-art { width: 195px; height: 146px; margin: 2px 0; filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.35)); }
-#result h2 { font-size: 32px; font-weight: 800; margin: 2px 0; color: #ffc107; }
-#result p { font-size: 16px; font-weight: 600; margin: 4px auto 8px; max-width: 320px; color: #e3f2fd; }
-.total-line { font-size: 19px !important; font-weight: 800 !important; color: #fff !important; margin-bottom: 10px !important; }
+.res-wrap {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 360px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.res-top-title {
+  margin: 0 0 2px;
+  font-size: 26px;
+  font-weight: 800;
+  color: #fff;
+  text-shadow: 0 2px 6px rgba(10, 46, 93, 0.45);
+}
+.trophy-art {
+  width: 220px;
+  height: 156px;
+  filter: drop-shadow(0 8px 16px rgba(10, 46, 93, 0.3));
+}
+#result h2 {
+  font-size: 36px;
+  font-weight: 800;
+  margin: 2px 0 4px;
+  color: #0a2e5d;
+}
+#result #resMsg {
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.3;
+  margin: 0 auto 6px;
+  max-width: 310px;
+  color: #0a2e5d;
+}
+.res-pts-line {
+  margin: 0 0 10px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #0a2e5d;
+  background: rgba(255, 255, 255, 0.55);
+  padding: 5px 16px;
+  border-radius: 16px;
+}
+.res-pts-line b { color: #d62828; font-weight: 800; }
 
-/* tablet landscape (Galaxy Note 10.1) */
+.res-buttons {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.res-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  width: 100%;
+  padding: 13px 20px;
+  border-radius: 30px;
+  background: linear-gradient(180deg, #ffffff 0%, #e3f0ff 100%);
+  color: #0a2e5d;
+  border: 1.5px solid #b8d8f8;
+  box-shadow: 0 4px 10px rgba(10, 46, 93, 0.18);
+  font-size: 18px;
+  font-weight: 800;
+}
+.res-btn.res-primary {
+  background: linear-gradient(180deg, #ffdf40 0%, #ffc107 58%, #f2a100 100%);
+  border-color: #ffe97d;
+  box-shadow: 0 4px 0 #b57600, 0 6px 14px rgba(10, 46, 93, 0.25);
+}
+.res-btn:active { transform: translateY(2px); }
+.res-ico {
+  position: absolute;
+  left: 22px;
+  width: 22px;
+  height: 22px;
+}
+
+/* ---------- Tablet scaling (Galaxy Note 10.1 & larger screens) ---------- */
+@media (min-width: 768px) and (min-height: 550px) {
+  #menu { padding: 16px 28px 24px; }
+  .hero-logo {
+    width: min(56vw, 480px);
+    max-height: 38vh;
+  }
+  .menu-box {
+    max-width: 470px;
+    gap: 13px;
+    margin-bottom: 8px;
+  }
+  .menu-btn {
+    max-width: 470px;
+    padding: 17px 30px;
+    font-size: 24px;
+    border-radius: 40px;
+  }
+  .menu-btn .ico {
+    left: 26px;
+    width: 34px;
+    height: 34px;
+  }
+  .sub-panel {
+    max-width: 650px;
+    padding: 20px 24px 22px;
+    border-radius: 30px;
+  }
+  .sub-head h3 { font-size: 24px; }
+  .head-ico { width: 30px; height: 30px; }
+  .sub-back { font-size: 17px; padding: 8px 18px; }
+  .menu-btn.compact { padding: 14px 24px; font-size: 21px; }
+  #rounds { gap: 10px; margin-top: 10px; }
+  #rounds button {
+    padding: 12px 15px;
+    font-size: 18px;
+    border-radius: 20px;
+    gap: 10px;
+  }
+  #rounds button .r-ill { width: 42px; height: 42px; flex-basis: 42px; }
+  #rounds button b { flex-basis: 26px; height: 26px; line-height: 26px; font-size: 15px; }
+  .info-row { font-size: 19px; padding: 11px 18px; }
+  .info-row.highlight { font-size: 21px; }
+
+  /* Result screen on tablet */
+  .res-wrap { max-width: 430px; }
+  .res-top-title { font-size: 30px; }
+  .trophy-art { width: 245px; height: 172px; }
+  #result h2 { font-size: 40px; }
+  #result #resMsg { font-size: 19px; max-width: 380px; }
+  .res-pts-line { font-size: 18px; }
+  .res-btn { padding: 14px 24px; font-size: 20px; border-radius: 34px; }
+  .res-ico { left: 26px; width: 25px; height: 25px; }
+}
+
+/* Landscape game layout */
 @media (orientation: landscape) {
-  #menu { padding: 12px 20px 18px; }
-  .hero-logo { max-height: 34vh; width: min(50vw, 370px); }
-  .menu-box { gap: 9px; max-width: 350px; }
-  .menu-btn { padding: 12px 22px; font-size: 19px; }
   #game { flex-direction: row; padding: 16px; }
   .panel { width: 35%; max-width: 390px; padding-right: 20px; display: flex; flex-direction: column; }
-  .card { padding: 18px 14px; }
+  .card { padding: 16px 14px; }
+  .card-ill { width: 58px; height: 58px; }
   .card strong { font-size: 34px; }
   .mapwrap { margin-top: 0; }
 }
