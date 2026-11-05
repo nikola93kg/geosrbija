@@ -16,6 +16,7 @@ public class MainActivity extends Activity {
         WebSettings s = web.getSettings();
         s.setJavaScriptEnabled(true);
         s.setDomStorageEnabled(true); // localStorage keeps records and unlocked rounds
+        s.setMediaPlaybackRequiresUserGesture(false);
         setContentView(web);
         if (state != null) web.restoreState(state);
         else web.loadUrl("file:///android_asset/index.html");

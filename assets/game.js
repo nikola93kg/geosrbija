@@ -140,7 +140,35 @@
   // ---------- game state & UI ----------
   var $ = function (id) { return document.getElementById(id); };
   var store = window.localStorage;
-  var state = null, timer = null, pending = null;
+  var state = null, timer = null, pending = null, actx = null;
+
+  var SFX = {
+    click: [[660, 0, 0.05, 'sine', 0.15]],
+    tick:  [[880, 0, 0.04, 'sine', 0.12]],
+    good:  [[523, 0, 0.1, 'triangle', 0.25], [659, 0.08, 0.1, 'triangle', 0.25], [784, 0.16, 0.18, 'triangle', 0.28], [1047, 0.26, 0.28, 'triangle', 0.3]],
+    ok:    [[440, 0, 0.12, 'triangle', 0.22], [554, 0.1, 0.2, 'triangle', 0.22]],
+    bad:   [[311, 0, 0.16, 'sawtooth', 0.14], [233, 0.14, 0.26, 'sawtooth', 0.14]],
+    win:   [[523, 0, 0.12, 'triangle', 0.28], [659, 0.1, 0.12, 'triangle', 0.28], [784, 0.2, 0.12, 'triangle', 0.28], [1047, 0.32, 0.38, 'triangle', 0.32]],
+    lose:  [[392, 0, 0.15, 'triangle', 0.22], [349, 0.14, 0.15, 'triangle', 0.22], [311, 0.28, 0.3, 'triangle', 0.22]]
+  };
+  function sfx(name) {
+    if (+store.getItem('muted')) return;
+    try {
+      var C = window.AudioContext || window.webkitAudioContext;
+      if (!C) return;
+      if (!actx) actx = new C();
+      if (actx.state === 'suspended') actx.resume();
+      var t0 = actx.currentTime;
+      (SFX[name] || []).forEach(function (n) {
+        var o = actx.createOscillator(), g = actx.createGain();
+        o.type = n[3]; o.frequency.value = n[0];
+        g.gain.setValueAtTime(n[4], t0 + n[1]);
+        g.gain.exponentialRampToValueAtTime(0.001, t0 + n[1] + n[2]);
+        o.connect(g); g.connect(actx.destination);
+        o.start(t0 + n[1]); o.stop(t0 + n[1] + n[2]);
+      });
+    } catch (e) {}
+  }
 
   function show(screen) {
     ['menu', 'game', 'result'].forEach(function (s) { $(s).style.display = s === screen ? '' : 'none'; });
@@ -162,6 +190,7 @@
   }
 
   function start(round) {
+    sfx('click');
     state = { round: round, total: 0 };
     startRound();
   }
@@ -185,17 +214,18 @@
     $('target').textContent = q[0];
     $('points').textContent = state.total;
     state.answered = false;
-    state.left = TIME;
+    state.left = TIME; state.lastSec = TIME;
     tick();
     clearInterval(timer);
     timer = setInterval(function () { state.left -= 0.1; tick(); if (state.left <= 0) answer(null); }, 100);
   }
 
   function tick() {
-    var f = Math.max(0, state.left / TIME);
+    var f = Math.max(0, state.left / TIME), sec = Math.max(0, Math.ceil(state.left));
     $('bar').style.width = (f * 100) + '%';
     $('bar').className = f < 0.3 ? 'low' : '';
-    $('clock').textContent = '00:' + ('0' + Math.max(0, Math.ceil(state.left))).slice(-2);
+    $('clock').textContent = '00:' + ('0' + sec).slice(-2);
+    if (sec !== state.lastSec) { state.lastSec = sec; if (sec > 0 && sec <= 4) sfx('tick'); }
   }
 
   function answer(guess) {
@@ -219,10 +249,11 @@
     if (!isRiver) mark(tLat, tLon, 'pin');
     state.roundPts += pts; state.total += pts;
     $('points').textContent = state.total;
-    var fb = $('feedback');
+    var fb = $('feedback'), kind = pts >= 700 ? 'good' : pts > 0 ? 'ok' : 'bad';
     fb.textContent = !guess ? '⏱ Isteklo vreme!' : (pts >= 700 ? '✓ ' : pts > 0 ? '' : '✗ ') +
       (km < 1 ? 'Tačno!' : Math.round(km) + ' km') + '  +' + pts;
-    fb.className = pts >= 700 ? 'good' : pts > 0 ? 'ok' : 'bad';
+    fb.className = kind;
+    sfx(kind);
     pending = setTimeout(next, 1800);
   }
 
@@ -240,6 +271,7 @@
     $('resRound').textContent = state.roundPts + ' / ' + (state.qs.length * 1000);
     $('resTotal').textContent = state.total;
     $('resNext').style.display = passed && !last ? '' : 'none';
+    sfx(passed ? 'win' : 'lose');
     show('result');
   }
 
@@ -251,9 +283,16 @@
   svg.addEventListener('touchstart', onTap);
   svg.addEventListener('mousedown', onTap);
   $('play').onclick = function () { start(0); };
-  $('resNext').onclick = function () { state.round++; startRound(); };
-  $('resMenu').onclick = renderMenu;
-  $('quit').onclick = function () { clearInterval(timer); clearTimeout(pending); state = null; renderMenu(); };
+  $('resNext').onclick = function () { sfx('click'); state.round++; startRound(); };
+  $('resMenu').onclick = function () { sfx('click'); renderMenu(); };
+  $('quit').onclick = function () { sfx('click'); clearInterval(timer); clearTimeout(pending); state = null; renderMenu(); };
+  $('mute').textContent = +store.getItem('muted') ? '🔇' : '🔊';
+  $('mute').onclick = function () {
+    var m = +store.getItem('muted') ? 0 : 1;
+    store.setItem('muted', m);
+    $('mute').textContent = m ? '🔇' : '🔊';
+    if (!m) sfx('click');
+  };
 
   drawMap();
   renderMenu();

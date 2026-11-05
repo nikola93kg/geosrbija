@@ -51,8 +51,8 @@ h1 span { color: #d62828; }
 .panel { flex: 0 0 auto; }
 .top { display: flex; align-items: center; font-weight: 800; font-size: 20px; }
 .top #qNum { flex: 1; text-align: center; }
-.spacer, #quit { width: 42px; height: 42px; }
-#quit { background: rgba(255,255,255,.15); color: #fff; border-radius: 21px; font-size: 30px; line-height: 38px; }
+#quit, #mute { width: 42px; height: 42px; background: rgba(255,255,255,.15); color: #fff; border-radius: 21px; font-size: 30px; line-height: 38px; }
+#mute { font-size: 20px; }
 .timer { height: 10px; background: rgba(255,255,255,.25); border-radius: 5px; margin: 10px 0 12px; overflow: hidden; }
 #bar { height: 100%; background: #ffc107; width: 100%; border-radius: 5px; }
 #bar.low { background: #d62828; }
