@@ -1,20 +1,10 @@
 #!/usr/bin/env python3
-"""Draws the GeoSrbija launcher icon using assets/img/geoSrbija.png over a rounded navy tile."""
+"""Generates mipmap-*/ic_launcher.png from assets/img/app_icon_geosrbija.png."""
 import os
-from PIL import Image, ImageDraw
+from PIL import Image
 
 APP = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-S = 512
-img = Image.new('RGBA', (S, S), (0, 0, 0, 0))
-d = ImageDraw.Draw(img)
-d.rounded_rectangle([0, 0, S - 1, S - 1], radius=104, fill=(10, 46, 93, 255))
-
-logo = Image.open(os.path.join(APP, 'assets', 'img', 'geoSrbija.png')).convert('RGBA')
-lw, lh = logo.size
-tw = int(S * 0.88)
-th = int(lh * tw / lw)
-logo = logo.resize((tw, th), Image.Resampling.LANCZOS)
-img.paste(logo, ((S - tw) // 2, (S - th) // 2), logo)
+img = Image.open(os.path.join(APP, 'assets', 'img', 'app_icon_geosrbija.png')).convert('RGBA')
 
 for bucket, size in {'mdpi': 48, 'hdpi': 72, 'xhdpi': 96, 'xxhdpi': 144, 'xxxhdpi': 192}.items():
     out = os.path.join(APP, 'res', 'mipmap-' + bucket)
